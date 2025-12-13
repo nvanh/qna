@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Ôn tập HDTN Lớp 6 - HKI</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_back" />
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="style.css" rel="stylesheet" />
+	</head>
+	<body>
+		<!-- Result Modal -->
+		<div class="modal fade" id="resultModal" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header bg-primary text-white">
+						<h5 class="modal-title" id="resultTitle"></h5>
+					</div>
+					<div class="modal-body text-center">
+						<p id="resultMessage" class="fs-4"></p>
+						<div class="d-flex justify-content-center align-items-center gap-3">
+							<p>Correct: <span id="resultCorrect" class="stats-correct fw-bold fs-3"></span></p>
+							<p>Incorrect: <span id="resultIncorrect" class="stats-incorrect fw-bold fs-3"></span></p>
+							<p>Time: <span id="resultTime" class="fw-bold fs-3"></span></p>
+						</div>
+						<button class="btn btn-lg btn-primary mt-3" onclick="restartQuiz()">Retest</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Main Content -->
+		<div class="w-100">
+			<div class="header d-flex justify-content-center align-items-center bg-dark text-white w-100">
+				<a href="index.html" class="text-decoration-none text-white me-5"><span class="material-symbols-outlined">arrow_back</span></a>
+				<div id="timer" class="fs-5 justify-self-start">Time: 0s</div>
+				<h1 class="text-center m-0">Ôn tập Hoạt Động Trải Nghiệm Lớp 6 - HKI</h1>
+				<div id="stats" class="text-end">
+					<div>Correct: <span class="stats-correct">0</span></div>
+					<div>Incorrect: <span class="stats-incorrect">0</span></div>
+				</div>
+			</div>
+			<div class="play mx-auto">
+				<div id="question" class="question-display"></div>
+				<div id="options" class="d-flex flex-wrap justify-content-center"></div>
+				<div class="text-center">
+					<button id="confirmBtn" class="btn btn-success confirm-btn" disabled>Confirm (Phím Space)</button>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+		<script>
+			const correctSound = new Audio("correct.mp3");
+			const errorSound = new Audio("error.mp3");
+
+			const questions = [
+				{
+					question: "Câu 1. Trong giờ học, chúng ta cần làm gì để tập trung học tập?",
+					options: ["A. Bàn bạc trao đổi liên tục với bạn ngồi cùng", "B. Nghe nhạc bằng tai nghe", "C. Cô giáo nói cái gì thì ghi ngay cái đó vào vở", "D. Chú ý quan sát, lắng nghe, không làm việc riêng, thực hiện nghiêm túc các nhiệm vụ học tập"],
+					correct: "D. Chú ý quan sát, lắng nghe, không làm việc riêng, thực hiện nghiêm túc các nhiệm vụ học tập",
+				},
+				{
+					question: "Câu 2. Mỗi ngày chúng ta cần ngủ bao nhiêu thời gian để có sức khỏe tốt?",
+					options: ["A. Ngủ trung bình từ 7 đến 8 tiếng, nghỉ trưa khoảng 30 phút", "B. Ngủ trung bình từ 8-10 tiếng, không cần ngủ trưa", "C. Ngủ trưa trung bình từ 3-4 tiếng, ngủ trưa 2 tiếng", "D. Ngủ càng nhiều càng tốt cho sức khỏe"],
+					correct: "A. Ngủ trung bình từ 7 đến 8 tiếng, nghỉ trưa khoảng 30 phút",
+				},
+				{
+					question: "Câu 3. Khi đi học về, em thấy em trai lục tung sách vở của mình, em sẽ?",
+					options: ["A. Tức giận, quát mắng em", "B. Nhẹ nhàng khuyên bảo em và sẽ cất đồ đạc cẩn thận hơn nữa", "C. Khóc reo lên, nhờ bố mẹ giải quyết", "D. Lấy vào lục tung hết, để em lên để tránh mất"],
+					correct: "B. Nhẹ nhàng khuyên bảo em và sẽ cất đồ đạc cẩn thận hơn nữa",
+				},
+				{
+					question: "Câu 4. Em nghe thấy có bạn trong lớp nói A, hay nói xấu về em. Khi nghe thấy các bạn trong lớp nói như vậy em sẽ giải quyết như thế nào?",
+					options: ["A. Gặp bạn A, tâm sự với bạn để hai người hiểu nhau hơn", "B. Xa lánh và không chơi với A nữa", "C. Tìm ra điểm xấu của A để nói xấu lại bạn", "D. Nhờ một anh lớp trên bắt nạt A cho bỏ tức"],
+					correct: "A. Gặp bạn A, tâm sự với bạn để hai người hiểu nhau hơn",
+				},
+				{
+					question: "Câu 5. Việc nào không nên làm khi thiết lập mối quan hệ thân thiện với các bạn mới?",
+					options: ["A. Cởi mở, chân thành với các bạn", "B. Bắt nạt, thân thiện, những tệ nết trong góp ý", "C. Đố kị, ganh đua", "D. Cảm thông, chia sẻ, giúp đỡ cho nhau"],
+					correct: "C. Đố kị, ganh đua",
+				},
+				{
+					question: "Câu 6. Hiện tượng nào dưới đây là thiên tai?",
+					options: ["A. Trời quang, mây tạnh", "B. Bạo lực", "C. Lũ, lụt", "D. Động đất", "E. Hạn hán"],
+					correct: "C. Lũ, lụt",
+				},
+				{
+					question: "Câu 7. Thế nào được gọi là đức tính đạo đức của một người?",
+					options: [
+						"A. Là điểm tốt nổi bật nhất của một người. Nó thể hiện qua thái độ, hành vi, hành động tự giác, cách ứng xử của người đó",
+						"B. Là điểm tốt nổi bật nhất của một người",
+						"C. Là điểm tốt nổi bật nhất của một người. Nó thể hiện qua cách ứng xử của người đó",
+						"D. Là điểm tốt nổi bật nhất của một người. Nó thể hiện qua hành động, việc làm của người đó",
+					],
+					correct: "A. Là điểm tốt nổi bật nhất của một người. Nó thể hiện qua thái độ, hành vi, hành động tự giác, cách ứng xử của người đó",
+				},
+				{
+					question: "Câu 8. Bạn Lan khi lên lớp 6 còn rất rụt rè và nhút nhát. Vậy nếu em là bạn của Lan em sẽ giúp bạn như thế nào để bạn tự tin hơn?",
+					options: ["A. Chê bai bạn, kể xấu bạn", "B. Tâm sự, gần gũi và rủ bạn tham gia vào các hoạt động chung cùng với mình", "C. Lan kể bạn khác cùng trêu bạn", "D. Mặc kệ bạn, ai có thân người ấy lo"],
+					correct: "B. Tâm sự, gần gũi và rủ bạn tham gia vào các hoạt động chung cùng với mình",
+				},
+				{
+					question: "Câu 9. Việc nào không nên làm khi thiết lập mối quan hệ gần gũi, kính trọng thầy cô?",
+					options: ["A. Không lắng nghe thầy cô", "B. Cảm thông, chia sẻ, giúp đỡ thầy cô khi cần thiết", "C. Suy nghĩ tích cực về những điều góp ý thẳng thắn của thầy cô", "D. Tôn trọng, lễ phép với thầy cô"],
+					correct: "A. Không lắng nghe thầy cô",
+				},
+				{
+					question: "Câu 10. Để thể hiện khả năng, sở thích của bản thân cần phải?",
+					options: ["A. Lúc nào cảm thấy thích thì mới làm", "B. Không dám bộc lộ khả năng", "C. Khoe khoang về khả năng của mình", "D. Tự tin về khả năng và sở thích mạnh mẽ của bản thân"],
+					correct: "D. Tự tin về khả năng và sở thích mạnh mẽ của bản thân",
+				},
+			];
+
+			let currentQuestionIndex = 0;
+			let correctCount = 0;
+			let incorrectCount = 0;
+			let selectedOption = null;
+			let timerInterval = null;
+			let secondsElapsed = 0;
+			let shuffledQuestions = [];
+
+			const resultModal = new bootstrap.Modal(document.getElementById("resultModal"));
+
+			function shuffleArray(array) {
+				for (let i = array.length - 1; i > 0; i--) {
+					const j = Math.floor(Math.random() * (i + 1));
+					[array[i], array[j]] = [array[j], array[i]];
+				}
+				return array;
+			}
+
+			function startQuiz() {
+				currentQuestionIndex = 0;
+				correctCount = 0;
+				incorrectCount = 0;
+				shuffledQuestions = shuffleArray([...questions]);
+				secondsElapsed = 0;
+
+				updateStats();
+				loadQuestion();
+				startTimer();
+			}
+
+			function startTimer() {
+				if (timerInterval) clearInterval(timerInterval);
+				secondsElapsed = 0;
+				document.getElementById("timer").textContent = `Time: ${secondsElapsed}s`;
+				timerInterval = setInterval(() => {
+					secondsElapsed++;
+					document.getElementById("timer").textContent = `Time: ${secondsElapsed}s`;
+				}, 1000);
+			}
+
+			function updateStats() {
+				document.querySelector("#stats .stats-correct").textContent = correctCount;
+				document.querySelector("#stats .stats-incorrect").textContent = incorrectCount;
+			}
+
+			function loadQuestion() {
+				if (currentQuestionIndex >= shuffledQuestions.length) {
+					showResult();
+					return;
+				}
+
+				const q = shuffledQuestions[currentQuestionIndex];
+				const questionElement = document.getElementById("question");
+				let formattedQuestion = q.question.replace(/\*([^*]+)\*/g, '<span class="text-primary fw-bold">$1</span>');
+				questionElement.innerHTML = formattedQuestion;
+
+				const playArea = document.querySelector(".play");
+				let imageContainer = playArea.querySelector("#questionImageContainer");
+
+				if (q.image) {
+					if (!imageContainer) {
+						imageContainer = document.createElement("div");
+						imageContainer.id = "questionImageContainer";
+						imageContainer.className = "text-center mb-4";
+						const img = document.createElement("img");
+						img.id = "questionImage";
+						img.className = "img-fluid";
+						img.style.maxHeight = "400px";
+						img.alt = "Hình minh họa câu hỏi";
+						imageContainer.appendChild(img);
+						// Chèn ngay sau phần câu hỏi
+						document.getElementById("question").after(imageContainer);
+					}
+					document.getElementById("questionImage").src = q.image;
+					imageContainer.style.display = "block";
+				} else {
+					if (imageContainer) {
+						imageContainer.style.display = "none";
+					}
+				}
+
+				const optionsContainer = document.getElementById("options");
+				const confirmBtn = document.getElementById("confirmBtn");
+				confirmBtn.disabled = true;
+				selectedOption = null;
+
+				const shuffledOptions = shuffleArray([...q.options]);
+
+				optionsContainer.innerHTML = "";
+
+				shuffledOptions.forEach((option) => {
+					const div = document.createElement("div");
+					div.className = "option-pill";
+					div.textContent = option;
+					div.onclick = () => selectOption(div, option);
+					optionsContainer.appendChild(div);
+				});
+			}
+
+			function selectOption(element, option) {
+				document.querySelectorAll(".option-pill").forEach((pill) => pill.classList.remove("selected"));
+				element.classList.add("selected");
+				selectedOption = option;
+				document.getElementById("confirmBtn").disabled = false;
+			}
+
+			function checkAnswer() {
+				const q = shuffledQuestions[currentQuestionIndex];
+				const isCorrect = selectedOption === q.correct;
+				const selectedPill = Array.from(document.querySelectorAll(".option-pill")).find((pill) => pill.textContent === selectedOption);
+
+				if (isCorrect) {
+					correctCount++;
+					selectedPill.classList.add("correct");
+					correctSound.play().catch((e) => console.log("Không phát được âm thanh Correct:", e));
+				} else {
+					incorrectCount++;
+					selectedPill.classList.add("incorrect");
+					const correctPill = Array.from(document.querySelectorAll(".option-pill")).find((pill) => pill.textContent === q.correct);
+					if (correctPill) correctPill.classList.add("correct");
+					errorSound.play().catch((e) => console.log("Không phát được âm thanh Incorrect:", e));
+				}
+				updateStats();
+
+				setTimeout(() => {
+					currentQuestionIndex++;
+					loadQuestion();
+				}, 1000);
+			}
+
+			function showResult() {
+				clearInterval(timerInterval);
+				document.getElementById("resultCorrect").textContent = correctCount;
+				document.getElementById("resultIncorrect").textContent = incorrectCount;
+				document.getElementById("resultTime").textContent = `${secondsElapsed}s`;
+
+				if (correctCount === shuffledQuestions.length) {
+					document.getElementById("resultTitle").textContent = "Excellent!";
+					document.getElementById("resultMessage").textContent = "You achieved 100% accuracy.";
+				} else {
+					document.getElementById("resultTitle").textContent = "Finished!";
+					document.getElementById("resultMessage").textContent = `You answered ${correctCount} out of ${shuffledQuestions.length} questions correctly. Give it another shot!`;
+				}
+				resultModal.show();
+			}
+
+			function restartQuiz() {
+				resultModal.hide();
+				startQuiz();
+			}
+
+			document.getElementById("confirmBtn").onclick = checkAnswer;
+			document.addEventListener("keydown", (e) => {
+				if (e.code === "Space" && !document.getElementById("confirmBtn").disabled) {
+					e.preventDefault();
+					checkAnswer();
+				}
+			});
+
+			document.addEventListener("DOMContentLoaded", () => {
+				startQuiz();
+			});
+		</script>
+	</body>
+</html>

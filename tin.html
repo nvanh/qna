@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Ôn tập Tin Lớp 6 - HKI</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_back" />
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="style.css" rel="stylesheet" />
+	</head>
+	<body>
+		<!-- Result Modal -->
+		<div class="modal fade" id="resultModal" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header bg-primary text-white">
+						<h5 class="modal-title" id="resultTitle"></h5>
+					</div>
+					<div class="modal-body text-center">
+						<p id="resultMessage" class="fs-4"></p>
+						<div class="d-flex justify-content-center align-items-center gap-3">
+							<p>Correct: <span id="resultCorrect" class="stats-correct fw-bold fs-3"></span></p>
+							<p>Incorrect: <span id="resultIncorrect" class="stats-incorrect fw-bold fs-3"></span></p>
+							<p>Time: <span id="resultTime" class="fw-bold fs-3"></span></p>
+						</div>
+						<button class="btn btn-lg btn-primary mt-3" onclick="restartQuiz()">Retest</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Main Content -->
+		<div class="w-100">
+			<div class="header d-flex justify-content-center align-items-center bg-dark text-white w-100">
+				<a href="index.html" class="text-decoration-none text-white me-5"><span class="material-symbols-outlined">arrow_back</span></a>
+				<div id="timer" class="fs-5 justify-self-start">Time: 0s</div>
+				<h1 class="text-center m-0">Ôn tập Tin Học Lớp 6 - HKI</h1>
+				<div id="stats" class="text-end">
+					<div>Correct: <span class="stats-correct">0</span></div>
+					<div>Incorrect: <span class="stats-incorrect">0</span></div>
+				</div>
+			</div>
+			<div class="play mx-auto">
+				<div id="question" class="question-display"></div>
+				<div id="options" class="d-flex flex-wrap justify-content-center"></div>
+				<div class="text-center">
+					<button id="confirmBtn" class="btn btn-success confirm-btn" disabled>Confirm (Phím Space)</button>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+		<script>
+			const correctSound = new Audio("correct.mp3");
+			const errorSound = new Audio("error.mp3");
+
+			const questions = [
+				{
+					question: "Câu 1. Trong các câu sau, câu nào đúng?",
+					options: ["A. Website là một trang web", "B. Một website chỉ có thể có một trang web", "C. Một website bao gồm nhiều trang web", "D. Các văn bản đưa vào website phải không có dấu"],
+					correct: "C. Một website bao gồm nhiều trang web",
+				},
+				{
+					question: "Câu 2. Trong các tên sau đây, tên nào không phải là tên của trình duyệt web?",
+					options: ["A. Opera", "B. Microsoft Edge", "C. File Explorer", "D. Safari"],
+					correct: "C. File Explorer",
+				},
+				{
+					question: "Câu 3. Để tìm kiếm thông tin về tình hình dịch Covid-19 năm 2021 tại Việt Nam, em sử dụng từ khóa nào để thu hẹp phạm vi tìm kiếm?",
+					options: ["A. Việt Nam", "B. Dịch Covid", "C. Năm 2021", "D. Dịch Covid Việt Nam 2021"],
+					correct: "D. Dịch Covid Việt Nam 2021",
+				},
+				{
+					question: "Câu 4. Để kết nối với Internet, máy tính phải được cài đặt và cung cấp dịch vụ bởi:",
+					options: ["A. Người cung cấp dịch vụ Internet", "B. Người quản trị mạng máy tính", "C. Máy tính khác", "D. Tất cả các đáp án trên"],
+					correct: "A. Người cung cấp dịch vụ Internet",
+				},
+				{
+					question: "Câu 5. Khi di chuyển vào liên kết, con trỏ chuột thường chuyển thành hình gì?",
+					options: ["A. Hình bàn tay", "B. Hình mũi tên", "C. Hình chữ I", "D. Hình I"],
+					correct: "A. Hình bàn tay",
+				},
+				{
+					question: "Câu 6. Khi sử dụng Internet, các em cần lưu ý gì?",
+					options: ["A. Tuân thủ quy định của pháp luật", "B. Chọn lọc thông tin", "C. Thận trọng khi chia sẻ thông tin cá nhân trên Internet", "D. Tất cả các đáp án trên"],
+					correct: "D. Tất cả các đáp án trên",
+				},
+				{
+					question: "Câu 7. WWW là viết tắt của",
+					options: ["A. World Wide Web", "B. World Web Wide", "C. Web Wide World", "D. World Wide Web"],
+					correct: "A. World Wide Web",
+				},
+				{
+					question: "Câu 8. Thông tin tìm kiếm bằng máy tìm kiếm được biểu diễn dưới dạng nào?",
+					options: ["A. Hình ảnh", "B. Video", "C. Văn bản, hình ảnh, video", "D. Văn bản"],
+					correct: "C. Văn bản, hình ảnh, video",
+				},
+				{
+					question: "Câu 9. Phát biểu nào sau đây *không* phải là đặc điểm của Internet?",
+					options: ["A. Phạm vi hoạt động trên toàn cầu", "B. Có nhiều dịch vụ đa dạng và phong phú", "C. Không thuộc quyền sở hữu của ai", "D. Thông tin chính xác tuyệt đối"],
+					correct: "D. Thông tin chính xác tuyệt đối",
+				},
+				{
+					question: "Câu 10. Em sử dụng mạng Internet để truy cập Internet và tra cứu tình hình thời tiết ở Hải Phòng trong 1 tuần tới. Khi đó, em sử dụng dịch vụ nào của Internet?",
+					options: ["A. Khai thác thông tin trên web", "B. Thư điện tử", "C. Thương mại điện tử", "D. Trò chuyện trực tuyến"],
+					correct: "A. Khai thác thông tin trên web",
+				},
+				{
+					question: "Câu 11. Hoạt động di chuyển theo các liên kết được gọi là",
+					options: ["A. Tìm kiếm thông tin", "B. Duyệt web", "C. Truy cập", "D. Kích hoạt"],
+					correct: "B. Duyệt web",
+				},
+				{
+					question: "Câu 12. Địa chỉ trang web nào sau đây là hợp lệ?",
+					options: ["A. https://www.tienphong.vn", "B. https://haiha002@gmail.com", "C. www\\tienphong.vn", "D. https\\\\www.tienphong.vn"],
+					correct: "A. https://www.tienphong.vn",
+				},
+				{
+					question: "Câu 13. Trong trang web, liên kết (hay siêu liên kết) là gì?",
+					options: ["A. Là thành phần trong trang web trỏ đến trang web đó hoặc trỏ đến một trang web khác", "B. Là nội dung được thể hiện trên trình duyệt", "C. Là địa chỉ của một trang web", "D. Là địa chỉ thư điện tử"],
+					correct: "A. Là thành phần trong trang web trỏ đến trang web đó hoặc trỏ đến một trang web khác",
+				},
+				{
+					question: "Câu 14. World Wide Web là gì?",
+					options: ["A. Một trò chơi máy tính", "B. Một phần mềm máy tính", "C. Một hệ thống các website trên Internet cho phép người sử dụng xem và chia sẻ thông tin qua các trang web được liên kết với nhau", "D. Tên khác của Internet"],
+					correct: "C. Một hệ thống các website trên Internet cho phép người sử dụng xem và chia sẻ thông tin qua các trang web được liên kết với nhau",
+				},
+				{
+					question: "Câu 15. Phát biểu nào sau đây là đúng về WWW và thư viện?",
+					options: [
+						"A. Cả hai đều có một thủ thư hoặc chuyên gia chuyên nghiệp luôn túc trực để trả lời các câu hỏi của độc giả",
+						"B. Cả hai đều cung cấp tin tức và thông tin cập nhật từng phút",
+						"C. Cả hai đều đóng cửa sau giờ hành chính",
+						"D. Cả hai đều tạo môi trường cho người sử dụng có thể đọc được sách báo và tạp chí",
+					],
+					correct: "D. Cả hai đều tạo môi trường cho người sử dụng có thể đọc được sách báo và tạp chí",
+				},
+				{
+					question: "Câu 16. Một website bắt buộc phải có:",
+					options: ["A. Tên cá nhân hoặc tổ chức sở hữu", "B. Một địa chỉ truy cập", "C. Địa chỉ trụ sở của đơn vị sở hữu", "D. Địa chỉ thư điện tử"],
+					correct: "B. Một địa chỉ truy cập",
+				},
+				{
+					question: "Câu 17. Máy tìm kiếm là gì?",
+					options: ["A. Một chương trình bảo vệ máy tính khỏi vi rút", "B. Một chương trình sắp xếp dữ liệu trên máy tính của bạn", "C. Một động cơ cung cấp sức mạnh cho Internet", "D. Một website đặc biệt hỗ trợ người sử dụng tìm kiếm thông tin trên Internet"],
+					correct: "D. Một website đặc biệt hỗ trợ người sử dụng tìm kiếm thông tin trên Internet",
+				},
+				{
+					question: "Câu 18. Từ khóa là gì?",
+					options: ["A. Là từ khóa chia khóa", "B. Là từ hoặc cụm từ liên quan đến nội dung cần tìm kiếm do người sử dụng cung cấp", "C. Là tập hợp các từ mà máy tìm kiếm quy định trước", "D. Là một biểu tượng trong máy tìm kiếm"],
+					correct: "B. Là từ hoặc cụm từ liên quan đến nội dung cần tìm kiếm do người sử dụng cung cấp",
+				},
+				{
+					question: "Câu 19. Tên nào sau đây là tên cấu máy tìm kiếm?",
+					options: ["A. Google", "B. Word", "C. Windows Explorer", "D. Excel"],
+					correct: "A. Google",
+				},
+				{
+					question: "Câu 20. Kết quả của việc tìm kiếm bằng máy tìm kiếm là:",
+					options: ["A. Danh sách các tác giả các bài viết có chứa từ khóa tìm kiếm", "B. Danh sách các liên kết trỏ đến trang web có chứa từ khóa tìm kiếm", "C. Danh sách trang chủ của các website có liên quan", "D. Nội dung của một trang web có chứa từ khóa tìm kiếm"],
+					correct: "B. Danh sách các liên kết trỏ đến trang web có chứa từ khóa tìm kiếm",
+				},
+				{
+					question: "Câu 21. Có rất nhiều máy tìm kiếm, với một từ khóa thì việc tìm kiếm ở các máy tìm kiếm khác nhau sẽ cho kết quả khác nhau",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "A. Đúng",
+				},
+				{
+					question: "Câu 21. Chỉ có máy tìm kiếm Google",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "B. Sai",
+				},
+				{
+					question: "Câu 21. Mọi thông tin tìm kiếm trên Internet đều chính xác và đáng tin cậy",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "B. Sai",
+				},
+				{
+					question: "Câu 21. Từ khóa tìm kiếm rất quan trọng, lựa chọn đúng từ khóa sẽ cho kết quả nhanh và chính xác hơn",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "A. Đúng",
+				},
+				{
+					question: "Câu 22. Từ một website có thể tìm kiếm thông tin ở các website khác nếu có liên kết",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "A. Đúng",
+				},
+				{
+					question: "Câu 22. Các website liên kết với nhau tạo thành một trang web",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "B. Sai",
+				},
+				{
+					question: "Câu 22. Thông tin trên website tại mỗi thời điểm có thể khác nhau",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "A. Đúng",
+				},
+				{
+					question: "Câu 22. Chỉ các trang web của một website có liên kết với nhau, còn các website khác nhau không thể có liên kết",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "B. Sai",
+				},
+			];
+
+			let currentQuestionIndex = 0;
+			let correctCount = 0;
+			let incorrectCount = 0;
+			let selectedOption = null;
+			let timerInterval = null;
+			let secondsElapsed = 0;
+			let shuffledQuestions = [];
+
+			const resultModal = new bootstrap.Modal(document.getElementById("resultModal"));
+
+			function shuffleArray(array) {
+				for (let i = array.length - 1; i > 0; i--) {
+					const j = Math.floor(Math.random() * (i + 1));
+					[array[i], array[j]] = [array[j], array[i]];
+				}
+				return array;
+			}
+
+			function startQuiz() {
+				currentQuestionIndex = 0;
+				correctCount = 0;
+				incorrectCount = 0;
+				shuffledQuestions = shuffleArray([...questions]);
+				secondsElapsed = 0;
+
+				updateStats();
+				loadQuestion();
+				startTimer();
+			}
+
+			function startTimer() {
+				if (timerInterval) clearInterval(timerInterval);
+				secondsElapsed = 0;
+				document.getElementById("timer").textContent = `Time: ${secondsElapsed}s`;
+				timerInterval = setInterval(() => {
+					secondsElapsed++;
+					document.getElementById("timer").textContent = `Time: ${secondsElapsed}s`;
+				}, 1000);
+			}
+
+			function updateStats() {
+				document.querySelector("#stats .stats-correct").textContent = correctCount;
+				document.querySelector("#stats .stats-incorrect").textContent = incorrectCount;
+			}
+
+			function loadQuestion() {
+				if (currentQuestionIndex >= shuffledQuestions.length) {
+					showResult();
+					return;
+				}
+
+				const q = shuffledQuestions[currentQuestionIndex];
+				const questionElement = document.getElementById("question");
+				let formattedQuestion = q.question.replace(/\*([^*]+)\*/g, '<span class="text-primary fw-bold">$1</span>');
+				questionElement.innerHTML = formattedQuestion;
+
+				const playArea = document.querySelector(".play");
+				let imageContainer = playArea.querySelector("#questionImageContainer");
+
+				if (q.image) {
+					if (!imageContainer) {
+						imageContainer = document.createElement("div");
+						imageContainer.id = "questionImageContainer";
+						imageContainer.className = "text-center mb-4";
+						const img = document.createElement("img");
+						img.id = "questionImage";
+						img.className = "img-fluid";
+						img.style.maxHeight = "400px";
+						img.alt = "Hình minh họa câu hỏi";
+						imageContainer.appendChild(img);
+						// Chèn ngay sau phần câu hỏi
+						document.getElementById("question").after(imageContainer);
+					}
+					document.getElementById("questionImage").src = q.image;
+					imageContainer.style.display = "block";
+				} else {
+					if (imageContainer) {
+						imageContainer.style.display = "none";
+					}
+				}
+
+				const optionsContainer = document.getElementById("options");
+				const confirmBtn = document.getElementById("confirmBtn");
+				confirmBtn.disabled = true;
+				selectedOption = null;
+
+				const shuffledOptions = shuffleArray([...q.options]);
+
+				optionsContainer.innerHTML = "";
+
+				shuffledOptions.forEach((option) => {
+					const div = document.createElement("div");
+					div.className = "option-pill";
+					div.textContent = option;
+					div.onclick = () => selectOption(div, option);
+					optionsContainer.appendChild(div);
+				});
+			}
+
+			function selectOption(element, option) {
+				document.querySelectorAll(".option-pill").forEach((pill) => pill.classList.remove("selected"));
+				element.classList.add("selected");
+				selectedOption = option;
+				document.getElementById("confirmBtn").disabled = false;
+			}
+
+			function checkAnswer() {
+				const q = shuffledQuestions[currentQuestionIndex];
+				const isCorrect = selectedOption === q.correct;
+				const selectedPill = Array.from(document.querySelectorAll(".option-pill")).find((pill) => pill.textContent === selectedOption);
+
+				if (isCorrect) {
+					correctCount++;
+					selectedPill.classList.add("correct");
+					correctSound.play().catch((e) => console.log("Không phát được âm thanh Correct:", e));
+				} else {
+					incorrectCount++;
+					selectedPill.classList.add("incorrect");
+					const correctPill = Array.from(document.querySelectorAll(".option-pill")).find((pill) => pill.textContent === q.correct);
+					if (correctPill) correctPill.classList.add("correct");
+					errorSound.play().catch((e) => console.log("Không phát được âm thanh Incorrect:", e));
+				}
+				updateStats();
+
+				setTimeout(() => {
+					currentQuestionIndex++;
+					loadQuestion();
+				}, 1000);
+			}
+
+			function showResult() {
+				clearInterval(timerInterval);
+				document.getElementById("resultCorrect").textContent = correctCount;
+				document.getElementById("resultIncorrect").textContent = incorrectCount;
+				document.getElementById("resultTime").textContent = `${secondsElapsed}s`;
+
+				if (correctCount === shuffledQuestions.length) {
+					document.getElementById("resultTitle").textContent = "Excellent!";
+					document.getElementById("resultMessage").textContent = "You achieved 100% accuracy.";
+				} else {
+					document.getElementById("resultTitle").textContent = "Finished!";
+					document.getElementById("resultMessage").textContent = `You answered ${correctCount} out of ${shuffledQuestions.length} questions correctly. Give it another shot!`;
+				}
+				resultModal.show();
+			}
+
+			function restartQuiz() {
+				resultModal.hide();
+				startQuiz();
+			}
+
+			document.getElementById("confirmBtn").onclick = checkAnswer;
+			document.addEventListener("keydown", (e) => {
+				if (e.code === "Space" && !document.getElementById("confirmBtn").disabled) {
+					e.preventDefault();
+					checkAnswer();
+				}
+			});
+
+			document.addEventListener("DOMContentLoaded", () => {
+				startQuiz();
+			});
+		</script>
+	</body>
+</html>

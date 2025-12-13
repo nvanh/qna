@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Ôn tập GCCD Lớp 6 - HKI</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_back" />
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="style.css" rel="stylesheet" />
+	</head>
+	<body>
+		<!-- Result Modal -->
+		<div class="modal fade" id="resultModal" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header bg-primary text-white">
+						<h5 class="modal-title" id="resultTitle"></h5>
+					</div>
+					<div class="modal-body text-center">
+						<p id="resultMessage" class="fs-4"></p>
+						<div class="d-flex justify-content-center align-items-center gap-3">
+							<p>Correct: <span id="resultCorrect" class="stats-correct fw-bold fs-3"></span></p>
+							<p>Incorrect: <span id="resultIncorrect" class="stats-incorrect fw-bold fs-3"></span></p>
+							<p>Time: <span id="resultTime" class="fw-bold fs-3"></span></p>
+						</div>
+						<button class="btn btn-lg btn-primary mt-3" onclick="restartQuiz()">Retest</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Main Content -->
+		<div class="w-100">
+			<div class="header d-flex justify-content-center align-items-center bg-dark text-white w-100">
+				<a href="index.html" class="text-decoration-none text-white me-5"><span class="material-symbols-outlined">arrow_back</span></a>
+				<div id="timer" class="fs-5 justify-self-start">Time: 0s</div>
+				<h1 class="text-center m-0">Ôn tập Giáo Dục Công Dân Lớp 6 - HKI</h1>
+				<div id="stats" class="text-end">
+					<div>Correct: <span class="stats-correct">0</span></div>
+					<div>Incorrect: <span class="stats-incorrect">0</span></div>
+				</div>
+			</div>
+			<div class="play mx-auto">
+				<div id="question" class="question-display"></div>
+				<div id="options" class="d-flex flex-wrap justify-content-center"></div>
+				<div class="text-center">
+					<button id="confirmBtn" class="btn btn-success confirm-btn" disabled>Confirm (Phím Space)</button>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+		<script>
+			const correctSound = new Audio("correct.mp3");
+			const errorSound = new Audio("error.mp3");
+
+			const questions = [
+				{
+					question: "Câu 1. Ý kiến nào dưới đây là đúng khi nói về tính tự lập?",
+					options: [
+						"A. Tự lập giúp thành công trong cuộc sống và được sự tôn trọng của mọi người",
+						"B. Tự lập chỉ cần thiết đối với những người có hoàn cảnh khó khăn",
+						"C. Người tự lập thường thành công trong cuộc sống dù phải trải qua nhiều khó khăn",
+						"D. Tự lập sẽ giúp cho mọi người có thêm sức mạnh, sự tự tin và khả năng sáng tạo",
+					],
+					correct: "A. Tự lập giúp thành công trong cuộc sống và được sự tôn trọng của mọi người",
+				},
+				{
+					question: "Câu 2. Trái ngược với truyền thống tốt đẹp của gia đình, dòng họ được gọi là gì?",
+					options: ["A. gia đình văn hóa, có nề nếp gia phong, tôn ti trật tự", "B. gia đình trên dưới có sự đoàn kết, đồng lòng nhất trí", "C. giữ gìn, phát huy truyền thống tốt đẹp của gia đình, dòng họ", "D. tất cả thành viên được vui vẻ, gia đình hạnh phúc"],
+					correct: "C. giữ gìn, phát huy truyền thống tốt đẹp của gia đình, dòng họ",
+				},
+				{
+					question: "Câu 3. Trong trường hợp nào dưới đây, em nên làm gì?",
+					options: ["A. khuyên bạn kiên trì, chăm chỉ học từ vựng mỗi ngày", "B. đọc thêm sách và làm bài tập nâng cao", "C. đọc thêm sách và làm bài tập nâng cao", "D. nói với bạn: học không giỏi mà thích thể hiện"],
+					correct: "A. khuyên bạn kiên trì, chăm chỉ học từ vựng mỗi ngày",
+				},
+				{
+					question: "Câu 4. Tự lập là",
+					options: ["A. tự làm lấy các công việc của mình trong cuộc sống", "B. dựa vào người khác, nếu mình có thể nhờ được", "C. ỷ lại vào người khác, đặc biệt là vào bố mẹ của mình", "D. đợi bố mẹ sắp xếp nhắc nhở mới làm, không thì thôi"],
+					correct: "A. tự làm lấy các công việc của mình trong cuộc sống",
+				},
+				{
+					question: "Câu 5. Những gì có chất lượng cuộc sống, phản ánh đúng hiện thực cuộc sống được gọi là",
+					options: ["A. sự thật", "B. dũng cảm", "C. khiêm tốn", "D. tự trọng"],
+					correct: "A. sự thật",
+				},
+				{
+					question: "Câu 6. Lòng yêu thương con người là",
+					options: ["A. xuất phát từ tấm lòng chân thành, vô tư, trong sáng", "B. xuất phát từ mục đích sau này được người đó trả ơn", "C. hạ thấp giá trị của những người được giúp đỡ", "D. làm những điều có hại cho người khác"],
+					correct: "A. xuất phát từ tấm lòng chân thành, vô tư, trong sáng",
+				},
+				{
+					question: "Câu 7. Để giữ gìn và phát huy những truyền thống của gia đình và dòng họ thì chúng ta cần làm gì?",
+					options: ["A. Không muốn nói truyền thống của gia đình và dòng họ", "B. Làm nhiều việc sai trái với gia đình, dòng họ", "C. Tự hào, biết ơn người đi trước", "D. Thay đổi truyền thống của gia đình và dòng họ theo ý mình"],
+					correct: "C. Tự hào, biết ơn người đi trước",
+				},
+				{
+					question: "Câu 8. Em tán thành ý kiến nào dưới đây khi nói về sự thật?",
+					options: ["A. Tôn trọng sự thật là góp phần bảo vệ cuộc sống", "B. Chỉ cần nói thật với những người thân của mình", "C. Có thể không dùng sự thật khi không có ai biết", "D. Cần phải trung thực trong những trường hợp không cần thiết"],
+					correct: "A. Tôn trọng sự thật là góp phần bảo vệ cuộc sống",
+				},
+				{
+					question: "Câu 9. Đâu là biểu hiện của lòng yêu thương con người?",
+					options: ["A. Mục đích sau này được người đó trả ơn, báo đáp lại cho mình", "B. Biết tha thứ cho lỗi lầm của người khác khi họ đã sửa chữa", "C. Ha thấp nhân phẩm của những người khổ khăn được giúp đỡ", "D. Có thái độ đố kị với những người mang lỗi lầm"],
+					correct: "B. Biết tha thứ cho lỗi lầm của người khác khi họ đã sửa chữa",
+				},
+				{
+					question: "Câu 10. Một trong những biểu hiện của tính tự lập là",
+					options: ["A. luôn lấy lòng cấp trên để mình được thăng chức", "B. có ý chí nỗ lực phấn đấu vươn lên trong cuộc sống", "C. luôn trông chờ, dựa dẫm, ỷ lại vào người khác", "D. tìm mọi thủ đoạn để mình được thành công"],
+					correct: "B. có ý chí nỗ lực phấn đấu vươn lên trong cuộc sống",
+				},
+				{
+					question: "Câu 11. Việc làm nào dưới đây thể hiện công dân biết giữ gìn và phát huy nghề truyền thống của gia đình và dòng họ?",
+					options: ["A. Quảng bá nghề truyền thống", "B. Tích cực giúp đỡ người nghèo", "C. Sống trong sạch và lương thiện", "D. Tìm hiểu, lưu giữ nghề làm gốm"],
+					correct: "D. Tìm hiểu, lưu giữ nghề làm gốm",
+				},
+				{
+					question: "Câu 12. Hành vi nào dưới đây thể hiện lòng yêu thương?",
+					options: ["A. Khi tị giúp bố mẹ chăn trâu, cậu còn tranh thủ đọc thêm sách", "B. Nếu gặp bài tập khó thì a, bọ có thể có thời gian làm việc khác", "C. Bố mẹ giao cho D tưới cây, nhưng D chỉ tưới khi bố mẹ nhắc", "D. Dám công khai học bổng vì không muốn gây sự chú ý"],
+					correct: "D. Dám công khai học bổng vì không muốn gây sự chú ý",
+				},
+				{
+					question: "Câu 13. Ý kiến nào sau đây là đúng khi nói về trung thực trong sự thật?",
+					options: ["A. Thường làm mất lòng người khác", "B. Góp phần làm giàu lòng người", "C. Người trung thực không thể thành công", "D. Giúp con người tin tưởng nhau"],
+					correct: "D. Giúp con người tin tưởng nhau",
+				},
+				{
+					question: "Câu 14. Ý kiến nào sau đây là đúng khi nói về lòng yêu thương con người?",
+					options: ["A. Tình yêu thương giúp con người dễ dàng có thêm sức mạnh vượt qua khó khăn", "B. Yêu thương là phải nghĩ tốt, bênh vực cả những người làm điều xấu", "C. Chỉ cần yêu thương người trong gia đình, dòng họ của mình", "D. Giúp đỡ người khác, hi vọng người đó trả ơn, báo đáp lại cho mình"],
+					correct: "A. Tình yêu thương giúp con người dễ dàng có thêm sức mạnh vượt qua khó khăn",
+				},
+				{
+					question: "Câu 15. Đối lập với tự lập là",
+					options: ["A. tự tin", "B. ích kỉ", "C. tự chủ", "D. ỷ lại"],
+					correct: "D. ỷ lại",
+				},
+				{
+					question: 'Câu 16. Tục ngữ: "Ngọc kia chuốt mãi cũng tròn/ Sắt kia mài mãi cũng nên kim" biểu hiện của đức tính nào dưới đây?',
+					options: ["A. Siêng năng, kiên trì", "B. Trung thực", "C. Tiết kiệm", "D. Khiêm tốn"],
+					correct: "A. Siêng năng, kiên trì",
+				},
+				{
+					question: "Câu 17. Trong các thực phẩm dưới đây, loại nào chứa nhiều protein (chất đạm) nhất?",
+					options: ["A. Thịt", "B. Gạo", "C. Rau xanh", "D. Hoa quả"],
+					correct: "A. Thịt",
+				},
+				{
+					question: "Câu 18. Việc làm nào dưới đây thể hiện lòng yêu thương người?",
+					options: ["A. Tự chăm sóc đời sống vật chất cho mình", "B. Chia sẻ hình ảnh bạn mình bị đánh lên mạng", "C. Quyên góp sách ủng hộ học sinh vùng thiên tai lũ lụt", "D. Che giấu việc bạn thân quay cóp"],
+					correct: "C. Quyên góp sách ủng hộ học sinh vùng thiên tai lũ lụt",
+				},
+				{
+					question: "Câu 19. Vào cuối năm học, dòng họ D lại tổ chức buổi tổng kết công tác khuyến học, khuyến tài. Trong buổi tổng kết, dòng họ đã tổ chức trao quà và thư động viên cho các con, cháu đạt kết quả cao trong học tập. Việc làm này thể hiện việc",
+					options: ["A. tạo hình ảnh để con cháu hãnh diện với các họ khác", "B. kế thừa và phát huy truyền thống hiếu học của dòng họ", "C. giải ngân tiền tài trợ của các nhà hảo tâm trong họ", "D. phô trương, hãnh diện cho mọi người trong làng biết"],
+					correct: "B. kế thừa và phát huy truyền thống hiếu học của dòng họ",
+				},
+				{
+					question: "Câu 20. Việc làm nào dưới đây thể hiện hành vi của người luôn tôn trọng sự thật?",
+					options: ["A. Đặt điều nói xấu bạn trong lớp", "B. Không coi cóp bài trong giờ kiểm tra", "C. Làm sai thì tìm cách đổ lỗi cho người khác", "D. Nói dối mẹ đi học thêm để đi chơi game"],
+					correct: "B. Không coi cóp bài trong giờ kiểm tra",
+				},
+				{
+					question: "Câu 21. Câu tục ngữ, thành ngữ nào dưới đây khuyên chúng ta giữ truyền thống văn hóa tốt đẹp của gia đình dòng họ?",
+					options: ["A. Có đi có lại mới toại lòng nhau", "B. Giấy rách phải giữ lấy lề", "C. Trung tay quá chán", "D. Qua cầu rút ván"],
+					correct: "B. Giấy rách phải giữ lấy lề",
+				},
+				{
+					question: "Câu 22. Câu tục ngữ: “Thắng mực tàu lau lòng gỗ” có nội dung nói về",
+					options: ["A. giản dị, cần cù", "B. tiết kiệm, khiêm tốn", "C. khiêm tốn, siêng năng", "D. tôn trọng sự thật"],
+					correct: "D. tôn trọng sự thật",
+				},
+				{
+					question: "Câu 23. Hành vi nào dưới đây là thể hiện lòng yêu thương con người?",
+					options: ["A. Giúp đỡ tù nhân trốn trại", "B. Hỗ trợ người nhập cảnh trái phép", "C. Nhắn tin ủng hộ quỹ vắc xin", "D. Chia sẻ tiền giả lên mạng xã hội"],
+					correct: "C. Nhắn tin ủng hộ quỹ vắc xin",
+				},
+				{
+					question: "Câu 24. Ý kiến nào dưới đây không khẳng định khi nói về tính tự lập?",
+					options: [
+						"A. Tự lập giúp thành công trong cuộc sống và được sự tôn trọng của mọi người",
+						"B. Tự lập chỉ cần thiết đối với những người có hoàn cảnh khó khăn",
+						"C. Người tự lập thường thành công trong cuộc sống dù phải trải qua nhiều khó khăn",
+						"D. Tự lập sẽ giúp cho mọi người có thêm sức mạnh, sự tự tin và khả năng sáng tạo",
+					],
+					correct: "B. Tự lập chỉ cần thiết đối với những người có hoàn cảnh khó khăn",
+				},
+				{
+					question: "Câu 25. Hành vi nào thể hiện siêng năng, kiên trì?",
+					options: ["A. Dành ít nhất 30 phút để học tiếng Anh mỗi ngày", "B. Xa xướng xuyên trưa học, chơi điện tử", "C. Lấy sách giải ra chép cho nhanh để mẹ vui lòng", "D. Hỉ hả khi làm một nhà thông thái giúp đỡ việc nhà"],
+					correct: "A. Dành ít nhất 30 phút để học tiếng Anh mỗi ngày",
+				},
+				{
+					question: "Câu 26. Truyền thống hiếu học và tinh thần “tôn sư trọng đạo” trong văn hóa Việt Nam có nguồn gốc từ quan niệm nào trong xã hội phong kiến?",
+					options: ["A. Quan niệm: “Không thầy đố mày làm nên”", "B. Quan niệm: “Nhất sĩ nhì nông”", "C. Thái độ kính nể rể tháng buôn", "D. Dân tộc dễ để thù dai"],
+					correct: "A. Quan niệm: “Không thầy đố mày làm nên”",
+				},
+				{
+					question: "Câu 27. Thành ngữ: “Thẳng như ruột ngựa” ý nói người nào có luôn sống",
+					options: ["A. giản dị, cần cù", "B. tôn trọng sự thật", "C. tiết kiệm, siêng năng", "D. khiêm tốn, siêng năng"],
+					correct: "B. tôn trọng sự thật",
+				},
+				{
+					question:
+						"Câu 28. Trên đường đi học về B thấy có một em bé đang khóc tìm mẹ. Thấy vậy, bạn B liền lại đó em khóc không nữa và hỏi chuyện nhắn tin sau. Sau khi nghe em bé kể, B biết em bé bị lạc mất mẹ. Bạn B đã nhanh chóng dẫn em đến đồn công an gần nhất để nhờ các chú công an tìm mẹ cho em bé. Hành vi của bạn B thể hiện điều gì?",
+					options: ["A. Thích thể hiện mình trước đám người", "B. Muốn được các chú công an khen mình", "C. Lòng vị tha của em bé bị lạc mẹ", "D. Bạn B biết lo lắng và quan tâm, giúp đỡ em nhỏ"],
+					correct: "D. Bạn B biết lo lắng và quan tâm, giúp đỡ em nhỏ",
+				},
+				{
+					question: "Câu 29. Hành động nào dưới đây thể hiện có tính tự lập?",
+					options: ["A. Bố mẹ nhắc nhở mới chịu học bài", "B. Chép bài trong giờ kiểm tra", "C. Khi mẹ giao mời làm việc nhà", "D. Đọc thêm sách và làm bài tập nâng cao"],
+					correct: "D. Đọc thêm sách và làm bài tập nâng cao",
+				},
+				{
+					question: "Câu 30. H dự định đăng kí tham gia cuộc thi hùng biện tiếng Anh do trường tổ chức. Nhưng H lo lắng vì vốn từ vựng tiếng Anh của mình còn hạn chế nên dần dần không biết có nên dự thi hay không. Trong trường hợp này, nếu em là bạn của H em sẽ làm gì?",
+					options: ["A. Mặc kệ, vì đây là lựa chọn của bạn, mình không liên quan", "B. Khuyên bạn kiên trì, chăm chỉ học từ vựng mỗi ngày", "C. Bảo bạn đừng thi vì tiếng Anh khó sẽ vất vả", "D. Nói xấu bạn: học không giỏi mà thích thể hiện"],
+					correct: "B. Khuyên bạn kiên trì, chăm chỉ học từ vựng mỗi ngày",
+				},
+				{
+					question: "Câu 31. Gia đình T có truyền thống yêu nước. Ông của T là lãnh thành cách mạng, bố của T đang làm việc trong quân đội. T rất tự hào về truyền thống gia đình, nên T rất nỗ lực cố gắng học để thi đậu vào Học viện lục quân, nối tiếp truyền thống gia đình. Việc làm của T thể hiện điều gì?",
+					options: ["A. Kế thừa truyền thống tốt đẹp của gia đình, dòng họ", "B. Phô trương cho mọi người biết về gia đình và dòng họ", "C. T muốn thể hiện cái tôi trước tất cả bạn bè và thầy cô", "D. T muốn thể hiện mình trước gia đình và dòng họ"],
+					correct: "A. Kế thừa truyền thống tốt đẹp của gia đình, dòng họ",
+				},
+				{
+					question: "Câu 32. Cuộc tranh luận căng thẳng xảy ra giữa các bạn trong lớp N, cùng một sự việc mà các bạn đưa ra rất nhiều ý kiến khác nhau. Nếu em là N, em sẽ làm gì?",
+					options: ["A. Bảo vệ đến cùng ý kiến của mình, không cần lắng nghe ai", "B. Ý kiến nào được nhiều bạn đồng tình thì theo", "C. Không bao giờ dám đưa ra ý kiến của mình", "D. Lắng nghe, phân tích để chọn ý kiến đúng nhất"],
+					correct: "D. Lắng nghe, phân tích để chọn ý kiến đúng nhất",
+				},
+				{
+					question: "Câu 33. Gia đình bạn S là gia đình nghèo, bố bạn bị bệnh hiểm nghèo. Nhà trường miễn học phí cho bạn, lớp tổ chức đi thăm hỏi, động viên bạn. Hành động đó thể hiện điều gì?",
+					options: ["A. Lòng yêu thương mọi người", "B. Tinh thần đoàn kết", "C. Tình thân yêu thương mọi người", "D. Lòng trung thành"],
+					correct: "A. Lòng yêu thương mọi người",
+				},
+				{
+					question: "Câu 34. Có giáo nhiệm vụ làm việc nhóm nhưng S không tự giác làm việc của mình được phần công mà luôn trông chờ, ỷ lại vào các bạn. Nếu em là bạn của S, em sẽ làm gì?",
+					options: ["A. Thẳng thắn góp ý với S nên siêng năng, kiên trì làm việc của mình, nếu gặp vấn đề khó khăn thì có thể nhờ các bạn khác giúp đỡ", "B. Chê trách bạn trước nhóm và nói rằng S không làm việc, sẽ nói với cô giáo", "C. Làm giúp bạn luôn, dù sao cũng là bạn bè", "D. Giữ im lặng và làm việc của mình"],
+					correct: "A. Thẳng thắn góp ý với S nên siêng năng, kiên trì làm việc của mình, nếu gặp vấn đề khó khăn thì có thể nhờ các bạn khác giúp đỡ",
+				},
+				{
+					question: "Câu 35. Bạn P gặp bài khó là nản lòng, không chịu suy nghĩ nên toàn chép lời giải trong sách học thêm. Theo em, bạn P là người",
+					options: ["A. Siêng năng, chăm chỉ", "B. Lười biếng", "C. Tiết kiệm", "D. Trung thực"],
+					correct: "B. Lười biếng",
+				},
+				{
+					question:
+						"Câu 36. Thông tin: Trung năm nay lên lớp 8, Trung cho rằng mình đã lớn nên có thể tự quyết định được nhiều việc, không cần phải hỏi ý kiến bố mẹ nữa. Cuối tuần trước Trung đi chơi xa với một nhóm bạn mà không xin phép bố mẹ. Khi bố mẹ hỏi về việc đó, Trung nói: 'Con lớn rồi, con tự lập được, bố mẹ khỏi phải lo'. Các phát biểu sau nói về việc làm của Trung. *Hành động của Trung cho thấy Trung đã lớn, biết suy nghĩ cho bản thân, tự lo được cho bản thân*",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "B. Sai",
+				},
+				{
+					question:
+						"Câu 36. Thông tin: Trung năm nay lên lớp 8, Trung cho rằng mình đã lớn nên có thể tự quyết định được nhiều việc, không cần phải hỏi ý kiến bố mẹ nữa. Cuối tuần trước Trung đi chơi xa với một nhóm bạn mà không xin phép bố mẹ. Khi bố mẹ hỏi về việc đó, Trung nói: 'Con lớn rồi, con tự lập được, bố mẹ khỏi phải lo'. Các phát biểu sau nói về việc làm của Trung. *Hành động của Trung cho thấy Trung đang hiểu sai về đức tính tự lập*",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "A. Đúng",
+				},
+				{
+					question:
+						"Câu 36. Thông tin: Trung năm nay lên lớp 8, Trung cho rằng mình đã lớn nên có thể tự quyết định được nhiều việc, không cần phải hỏi ý kiến bố mẹ nữa. Cuối tuần trước Trung đi chơi xa với một nhóm bạn mà không xin phép bố mẹ. Khi bố mẹ hỏi về việc đó, Trung nói: 'Con lớn rồi, con tự lập được, bố mẹ khỏi phải lo'. Các phát biểu sau nói về việc làm của Trung. *Hành động của Trung không thể hiện tính tự lập, đó là hành vi dựa dẫm, ăn chơi*",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "B. Sai",
+				},
+				{
+					question:
+						"Câu 36. Thông tin: Trung năm nay lên lớp 8, Trung cho rằng mình đã lớn nên có thể tự quyết định được nhiều việc, không cần phải hỏi ý kiến bố mẹ nữa. Cuối tuần trước Trung đi chơi xa với một nhóm bạn mà không xin phép bố mẹ. Khi bố mẹ hỏi về việc đó, Trung nói: 'Con lớn rồi, con tự lập được, bố mẹ khỏi phải lo'. Các phát biểu sau nói về việc làm của Trung. *Hành động của Trung thể hiện tính tự giác, biết tự đi chơi và tự về, không cần xin ý kiến của bố mẹ*",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "B. Sai",
+				},
+				{
+					question: "Câu 37. Các phát biểu sau nói về biểu hiện của lòng yêu thương con người:\n*Chỉ cần yêu thương ông bà, bố mẹ và những người thân của mình*",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "B. Sai",
+				},
+				{
+					question: "Câu 37. Các phát biểu sau nói về biểu hiện của lòng yêu thương con người:\n*Người biết yêu thương con người sẽ không làm hại đến người khác*",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "A. Đúng",
+				},
+				{
+					question: "Câu 37. Các phát biểu sau nói về biểu hiện của lòng yêu thương con người:\n*Sự ban ơn và lòng thương hại làm giảm giá trị con người*",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "A. Đúng",
+				},
+				{
+					question: "Câu 37. Các phát biểu sau nói về biểu hiện của lòng yêu thương con người:\n*Làm cho mối quan hệ giữa con người với con người thêm gần gũi, gắn bó*",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "A. Đúng",
+				},
+				{
+					question: "Câu 38. Các phát biểu sau thể hiện đức tính tôn trọng sự thật:\nĂn ngay ở thẳng, chẳng sợ mất lòng*",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "A. Đúng",
+				},
+				{
+					question: "Câu 38. Các phát biểu sau thể hiện đức tính tôn trọng sự thật:\nBứng cây sống, trồng cây chết*",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "B. Sai",
+				},
+				{
+					question: "Câu 38. Các phát biểu sau thể hiện đức tính tôn trọng sự thật:\nCông ai nấy nhớ, tội ai nấy chịu*",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "A. Đúng",
+				},
+				{
+					question: "Câu 38. Các phát biểu sau thể hiện đức tính tôn trọng sự thật:\nĂn bằng nói chắc*",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "A. Đúng",
+				},
+				{
+					question: "Câu 39. Phát biểu về nguyên nhân giúp thầy Nguyễn Ngọc Kỳ đạt được ước mơ của mình:\nThầy có năng lực phi thường khi biết viết bằng chân, điều đó giúp thầy đi học và đạt được ước mơ làm thầy giáo",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "B. Sai",
+				},
+				{
+					question: "Câu 39. Phát biểu về nguyên nhân giúp thầy Nguyễn Ngọc Kỳ đạt được ước mơ của mình:\nThầy đã dũng cảm vượt lên trên hoàn cảnh, chăm chỉ, kiên trì vượt khó trong học tập để đạt được ước mơ",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "A. Đúng",
+				},
+				{
+					question: "Câu 39. Phát biểu về nguyên nhân giúp thầy Nguyễn Ngọc Kỳ đạt được ước mơ của mình:\nThầy nhận được sự giúp đỡ của mọi người khi đến trường và nhờ vào sự nỗ lực của bản thân để đạt được ước mơ",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "A. Đúng",
+				},
+				{
+					question: "Câu 39. Phát biểu về nguyên nhân giúp thầy Nguyễn Ngọc Kỳ đạt được ước mơ của mình:\nThầy đã lấy giấy dạo Ngữ Văn bị liệt đôi tay và phải viết bằng chân và trải qua vô vàn khó khăn để đạt được ước mơ",
+					options: ["A. Đúng", "B. Sai"],
+					correct: "B. Sai",
+				},
+			];
+
+			let currentQuestionIndex = 0;
+			let correctCount = 0;
+			let incorrectCount = 0;
+			let selectedOption = null;
+			let timerInterval = null;
+			let secondsElapsed = 0;
+			let shuffledQuestions = [];
+
+			const resultModal = new bootstrap.Modal(document.getElementById("resultModal"));
+
+			function shuffleArray(array) {
+				for (let i = array.length - 1; i > 0; i--) {
+					const j = Math.floor(Math.random() * (i + 1));
+					[array[i], array[j]] = [array[j], array[i]];
+				}
+				return array;
+			}
+
+			function startQuiz() {
+				currentQuestionIndex = 0;
+				correctCount = 0;
+				incorrectCount = 0;
+				shuffledQuestions = shuffleArray([...questions]);
+				secondsElapsed = 0;
+
+				updateStats();
+				loadQuestion();
+				startTimer();
+			}
+
+			function startTimer() {
+				if (timerInterval) clearInterval(timerInterval);
+				secondsElapsed = 0;
+				document.getElementById("timer").textContent = `Time: ${secondsElapsed}s`;
+				timerInterval = setInterval(() => {
+					secondsElapsed++;
+					document.getElementById("timer").textContent = `Time: ${secondsElapsed}s`;
+				}, 1000);
+			}
+
+			function updateStats() {
+				document.querySelector("#stats .stats-correct").textContent = correctCount;
+				document.querySelector("#stats .stats-incorrect").textContent = incorrectCount;
+			}
+
+			function loadQuestion() {
+				if (currentQuestionIndex >= shuffledQuestions.length) {
+					showResult();
+					return;
+				}
+
+				const q = shuffledQuestions[currentQuestionIndex];
+				const questionElement = document.getElementById("question");
+				let formattedQuestion = q.question.replace(/\*([^*]+)\*/g, '<span class="text-primary fw-bold">$1</span>');
+				questionElement.innerHTML = formattedQuestion;
+
+				const playArea = document.querySelector(".play");
+				let imageContainer = playArea.querySelector("#questionImageContainer");
+
+				if (q.image) {
+					if (!imageContainer) {
+						imageContainer = document.createElement("div");
+						imageContainer.id = "questionImageContainer";
+						imageContainer.className = "text-center mb-4";
+						const img = document.createElement("img");
+						img.id = "questionImage";
+						img.className = "img-fluid";
+						img.style.maxHeight = "400px";
+						img.alt = "Hình minh họa câu hỏi";
+						imageContainer.appendChild(img);
+						// Chèn ngay sau phần câu hỏi
+						document.getElementById("question").after(imageContainer);
+					}
+					document.getElementById("questionImage").src = q.image;
+					imageContainer.style.display = "block";
+				} else {
+					if (imageContainer) {
+						imageContainer.style.display = "none";
+					}
+				}
+
+				const optionsContainer = document.getElementById("options");
+				const confirmBtn = document.getElementById("confirmBtn");
+				confirmBtn.disabled = true;
+				selectedOption = null;
+
+				const shuffledOptions = shuffleArray([...q.options]);
+
+				optionsContainer.innerHTML = "";
+
+				shuffledOptions.forEach((option) => {
+					const div = document.createElement("div");
+					div.className = "option-pill";
+					div.textContent = option;
+					div.onclick = () => selectOption(div, option);
+					optionsContainer.appendChild(div);
+				});
+			}
+
+			function selectOption(element, option) {
+				document.querySelectorAll(".option-pill").forEach((pill) => pill.classList.remove("selected"));
+				element.classList.add("selected");
+				selectedOption = option;
+				document.getElementById("confirmBtn").disabled = false;
+			}
+
+			function checkAnswer() {
+				const q = shuffledQuestions[currentQuestionIndex];
+				const isCorrect = selectedOption === q.correct;
+				const selectedPill = Array.from(document.querySelectorAll(".option-pill")).find((pill) => pill.textContent === selectedOption);
+
+				if (isCorrect) {
+					correctCount++;
+					selectedPill.classList.add("correct");
+					correctSound.play().catch((e) => console.log("Không phát được âm thanh Correct:", e));
+				} else {
+					incorrectCount++;
+					selectedPill.classList.add("incorrect");
+					const correctPill = Array.from(document.querySelectorAll(".option-pill")).find((pill) => pill.textContent === q.correct);
+					if (correctPill) correctPill.classList.add("correct");
+					errorSound.play().catch((e) => console.log("Không phát được âm thanh Incorrect:", e));
+				}
+				updateStats();
+
+				setTimeout(() => {
+					currentQuestionIndex++;
+					loadQuestion();
+				}, 1000);
+			}
+
+			function showResult() {
+				clearInterval(timerInterval);
+				document.getElementById("resultCorrect").textContent = correctCount;
+				document.getElementById("resultIncorrect").textContent = incorrectCount;
+				document.getElementById("resultTime").textContent = `${secondsElapsed}s`;
+
+				if (correctCount === shuffledQuestions.length) {
+					document.getElementById("resultTitle").textContent = "Excellent!";
+					document.getElementById("resultMessage").textContent = "You achieved 100% accuracy.";
+				} else {
+					document.getElementById("resultTitle").textContent = "Finished!";
+					document.getElementById("resultMessage").textContent = `You answered ${correctCount} out of ${shuffledQuestions.length} questions correctly. Give it another shot!`;
+				}
+				resultModal.show();
+			}
+
+			function restartQuiz() {
+				resultModal.hide();
+				startQuiz();
+			}
+
+			document.getElementById("confirmBtn").onclick = checkAnswer;
+			document.addEventListener("keydown", (e) => {
+				if (e.code === "Space" && !document.getElementById("confirmBtn").disabled) {
+					e.preventDefault();
+					checkAnswer();
+				}
+			});
+
+			document.addEventListener("DOMContentLoaded", () => {
+				startQuiz();
+			});
+		</script>
+	</body>
+</html>

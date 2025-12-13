@@ -5,18 +5,15 @@ body {
 	font-optical-sizing: auto;
 	font-weight: 400;
 	font-style: normal;
-  font-size: 16px;
+	font-size: 16px;
 }
 .material-symbols-outlined {
-  font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 24
+	font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
 }
-#timer, #stats {
-  width: 200px;
-  flex-shrink: 0;
+#timer,
+#stats {
+	width: 200px;
+	flex-shrink: 0;
 }
 .header {
 	padding: 1rem;
