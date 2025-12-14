@@ -10,11 +10,6 @@ body {
 .material-symbols-outlined {
 	font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
 }
-#timer,
-#stats {
-	width: 200px;
-	flex-shrink: 0;
-}
 .header {
 	padding: 1rem;
 }
