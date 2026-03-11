@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Ôn tập LSDL Lớp 6 - GHK2</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_back" />
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="style.css" rel="stylesheet" />
+	</head>
+	<body>
+		<!-- Result Modal -->
+		<div class="modal fade" id="resultModal" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header bg-primary text-white">
+						<h5 class="modal-title" id="resultTitle"></h5>
+					</div>
+					<div class="modal-body text-center">
+						<p id="resultMessage" class="fs-4"></p>
+						<div class="d-flex justify-content-center align-items-center gap-3">
+							<p>Correct: <span id="resultCorrect" class="stats-correct fw-bold fs-3"></span></p>
+							<p>Incorrect: <span id="resultIncorrect" class="stats-incorrect fw-bold fs-3"></span></p>
+							<p>Time: <span id="resultTime" class="fw-bold fs-3"></span></p>
+						</div>
+						<button class="btn btn-lg btn-primary mt-3" onclick="restartQuiz()">Retest</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Main Content -->
+		<div class="w-100">
+			<div class="header d-flex justify-content-between align-items-center bg-dark text-white w-100">
+				<a href="index.html" class="text-decoration-none text-white me-5"><span class="material-symbols-outlined">arrow_back</span></a>
+				<div class="d-flex flex-column gap-2">
+					<h1 class="text-center m-0 d-none d-sm-block">Ôn tập Lịch Sử & Địa Lý Lớp 6 - GHK2</h1>
+					<div id="timer" class="fs-5 text-center text-warning">Time: 0s</div>
+				</div>
+				<div id="stats" class="text-end">
+					<div>Correct: <span class="stats-correct">0</span></div>
+					<div>Incorrect: <span class="stats-incorrect">0</span></div>
+				</div>
+			</div>
+			<div class="play mx-auto">
+				<div id="question" class="question-display"></div>
+				<div id="options" class="d-flex flex-column flex-wrap justify-content-center"></div>
+				<div class="text-center">
+					<button id="confirmBtn" class="btn btn-success confirm-btn" disabled>Confirm (Phím Space)</button>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+		<script>
+			const correctSound = new Audio("correct.mp3");
+			const errorSound = new Audio("error.mp3");
+
+			const questions = [
+				{
+					question: "Các quốc gia Đông Nam Á có sự giao lưu văn hóa từ rất sớm với những quốc gia nào?",
+					options: ["Các quốc gia Tây Á.", "Ấn Độ và Trung Quốc.", "Chỉ giao lưu trong khu vực.", "Chỉ giao lưu với Ấn Độ."],
+					correct: "Ấn Độ và Trung Quốc.",
+				},
+				{
+					question: "Trong khoảng 10 thế kỉ đầu Công nguyên, nhiều nhóm cư dân Đông Nam Á đã tạo ra chữ viết riêng dựa trên hệ thống chữ cổ của người nào?",
+					options: ["Ấn Độ.", "Trung Quốc.", "Hy Lạp – La Mã.", "Kho-me."],
+					correct: "Ấn Độ.",
+				},
+				{
+					question: "Đâu là tên thương cảng lớn của Chăm Pa?",
+					options: ["Đại Chiêm.", "Sri Vijaya.", "Pa-lem-bang.", "Chăm-pa."],
+					correct: "Đại Chiêm.",
+				},
+				{
+					question: "Quốc gia nào dưới đây không thuộc lãnh thổ khu vực Đông Nam Á?",
+					options: ["Việt Nam.", "Trung Quốc.", "Thái Lan.", "Campuchia."],
+					correct: "Trung Quốc.",
+				},
+				{
+					question: "Kinh đô của nhà nước Văn Lang là",
+					options: ["Phong Châu (Vĩnh Phúc).", "Phong Châu (Phú Thọ).", "Cấm Khê (Hà Nội).", "Cổ Loa (Hà Nội)."],
+					correct: "Phong Châu (Phú Thọ).",
+				},
+				{
+					question: "Hiện vật tiêu biểu cho tài năng và kĩ thuật tinh xảo trong nghề đúc đồng của người Việt cổ là",
+					options: ["các loại vũ khí.", "các loại công cụ sản xuất.", "trống đồng, thạp đồng.", "các công cụ trong đời sống."],
+					correct: "trống đồng, thạp đồng.",
+				},
+				{
+					question: "Địa bàn chủ yếu của nước Văn Lang gắn liền với lưu vực các dòng sông lớn ở khu vực nào của Việt Nam hiện nay?",
+					options: ["Bắc Bộ và Bắc Trung Bộ.", "Duyên hải Nam Trung Bộ.", "Nam Trung Bộ và Nam Bộ.", "Trung Bộ và Nam Bộ."],
+					correct: "Bắc Bộ và Bắc Trung Bộ.",
+				},
+				{
+					question: "Ngày giỗ tổ Hùng Vương là ngày:",
+					options: ["Mùng 10 tháng 3 âm lịch hằng năm.", "Mùng 10 tháng 4 dương lịch hằng năm.", "Mùng 5 tháng 3 âm lịch hằng năm.", "Mùng 5 tháng 3 dương lịch hằng năm."],
+					correct: "Mùng 10 tháng 3 âm lịch hằng năm.",
+				},
+				{
+					question: "Sau khi lên ngôi, vua Hùng đặt tên nước là gì? Chia nước làm bao nhiêu bộ?",
+					options: ["Lạc Việt, 15 bộ.", "Âu Lạc, 15 bộ.", "Văn Lang, 15 bộ.", "Âu Việt, 15 bộ."],
+					correct: "Văn Lang, 15 bộ.",
+				},
+				{
+					question: "Nhân tố nào đóng vai trò quan trọng đưa tới sự ra đời sớm của nhà nước Văn Lang – Âu Lạc?",
+					options: ["Yêu cầu thống nhất toàn bộ lãnh thổ.", "Sự phân hóa giàu nghèo trở nên phổ biến.", "Hoạt động trị thủy và chống ngoại xâm.", "Kinh tế có bước chuyển biến rõ nét."],
+					correct: "Hoạt động trị thủy và chống ngoại xâm.",
+				},
+
+				{
+					question: "Ý nào dưới đây thể hiện điểm khác biệt trong tổ chức bộ máy nhà nước thời An Dương Vương so với thời Hùng Vương?",
+					options: ["Vua đứng đầu nhà nước, nắm mọi quyền hành.", "Giúp việc cho vua có các lạc hầu, lạc tướng.", "Cả nước chia thành nhiều bộ, do lạc tướng đứng đầu.", "Nhà nước được tổ chức chặt chẽ hơn."],
+					correct: "Nhà nước được tổ chức chặt chẽ hơn.",
+				},
+				{
+					question: "Đứng đầu chính quyền đô hộ của nhà Hán ở các quận Giao Chỉ, Cửu Chân, Nhật Nam là",
+					options: ["Thứ sử.", "Thái thú.", "Huyện lệnh.", "Tiết độ sứ."],
+					correct: "Thái thú.",
+				},
+				{
+					question: "Chính quyền đô hộ phương Bắc đã thực hiện những chính sách nào để bóc lột nhân dân ta?",
+					options: ["Bóc lột, cống nạp nặng nề, cướp ruộng đất.", "Đầu tư phát triển nông nghiệp.", "Đặt ra nhiều loại thuế.", "Cải cách chế độ thuế."],
+					correct: "Bóc lột, cống nạp nặng nề, cướp ruộng đất.",
+				},
+				{
+					question: "Địa danh nào dưới đây không phải là trị sở của các triều đại phong kiến phương Bắc trong thời kì Bắc thuộc?",
+					options: ["Thành Cổ Loa.", "Thành Luy Lâu.", "Thành Tống Bình.", "Thành Đại La."],
+					correct: "Thành Cổ Loa.",
+				},
+				{
+					question: "Nghề thủ công mới nào xuất hiện ở nước ta trong thời kì Bắc thuộc?",
+					options: ["Nghề rèn sắt.", "Nghề đúc đồng.", "Nghề làm giấy.", "Nghề làm gốm."],
+					correct: "Nghề làm giấy.",
+				},
+				{
+					question: "Trên Trái Đất có bao nhiêu đới khí hậu?",
+					options: ["5.", "6.", "3.", "4."],
+					correct: "5.",
+				},
+				{
+					question: "Biên độ nhiệt năm cao nhất thường ở vĩ độ",
+					options: ["Ôn đới.", "Xích đạo.", "Hàn đới.", "Nhiệt đới."],
+					correct: "Hàn đới.",
+				},
+				{
+					question: "Đặc điểm nào sau đây không đúng với khí hậu đới nóng?",
+					options: ["Góc chiếu của ánh sáng Mặt Trời rất nhỏ.", "Lượng mưa trung bình từ 1000 – 2000 mm.", "Gió tín phong thổi thường xuyên quanh năm.", "Nắng nóng quanh năm."],
+					correct: "Góc chiếu của ánh sáng Mặt Trời rất nhỏ.",
+				},
+				{
+					question: "Các mùa trong năm thể hiện rất rõ là đặc điểm của đới khí hậu nào?",
+					options: ["Nhiệt đới.", "Cận nhiệt đới.", "Ôn đới.", "Hàn đới."],
+					correct: "Ôn đới.",
+				},
+				{
+					question: "Loại gió nào sau đây thổi thường xuyên trong khu vực đới ôn đới?",
+					options: ["Tín phong.", "Gió mùa.", "Gió Tây ôn đới.", "Đông cực."],
+					correct: "Gió Tây ôn đới.",
+				},
+				{
+					question: "Việt Nam nằm trong đới khí hậu nào trên Trái Đất?",
+					options: ["Cận nhiệt.", "Nhiệt đới.", "Cận nhiệt đới.", "Hàn đới."],
+					correct: "Nhiệt đới.",
+				},
+				{
+					question: "Sự nóng lên của Trái Đất không làm cho",
+					options: ["Băng hai cực tan.", "Mực nước biển dâng.", "Sinh vật phong phú.", "Thiên tai bất thường."],
+					correct: "Sinh vật phong phú.",
+				},
+				{
+					question: "Ở nước ta, vùng nào sau đây chịu ảnh hưởng nặng nề nhất của biến đổi khí hậu?",
+					options: ["Đồng bằng sông Cửu Long.", "Đồng bằng sông Hồng.", "Duyên hải Nam Trung Bộ.", "Bắc Trung Bộ."],
+					correct: "Đồng bằng sông Cửu Long.",
+				},
+				{
+					question: "Nước trên Trái Đất phân bố chủ yếu ở",
+					options: ["Biển và đại dương.", "Các dòng sông lớn.", "Ao hồ, vũng vịnh.", "Băng hà."],
+					correct: "Biển và đại dương.",
+				},
+				{
+					question: "Hồ nào sau đây ở nước ta có nguồn gốc hình thành từ một khúc sông cũ?",
+					options: ["Hồ Thác Bà.", "Hồ Ba Bể.", "Hồ Trị An.", "Hồ Tây."],
+					correct: "Hồ Tây.",
+				},
+				{
+					question: "Hệ thống sông gồm mấy bộ phận?",
+					options: ["1.", "2.", "3.", "4."],
+					correct: "3.",
+				},
+				{
+					question: "Dao động thủy triều lớn nhất vào các ngày nào sau đây?",
+					options: ["Trăng tròn và không trăng.", "Trăng khuyết và không trăng.", "Trăng tròn và trăng khuyết.", "Trăng khuyết đầu, cuối tháng."],
+					correct: "Trăng tròn và không trăng.",
+				},
+				{
+					question: "Tầng nào sau đây của đất chứa các sản phẩm phong hóa bị biến đổi để hình thành đất?",
+					options: ["Tích tụ.", "Thảm mùn.", "Đá mẹ.", "Hữu cơ."],
+					correct: "Đá mẹ.",
+				},
+				{
+					question: "Sinh vật trên Trái Đất tập trung chủ yếu ở",
+					options: ["Đới ôn hòa và đới lạnh.", "Xích đạo và nhiệt đới.", "Đới nóng và đới ôn hòa.", "Đới lạnh và đới nóng."],
+					correct: "Đới nóng và đới ôn hòa.",
+				},
+				{
+					question: "Khu vực nào sau đây có rừng nhiệt đới điển hình nhất trên thế giới?",
+					options: ["Việt Nam.", "Công-gô.", "A-ma-dôn.", "Đông Nga."],
+					correct: "A-ma-dôn.",
+				},
+
+				{
+					question: "Đoạn tư liệu nói về chính sách thay đổi về bộ máy cai trị đối với người Việt.",
+					options: ["Đúng", "Sai"],
+					correct: "Sai",
+				},
+				{
+					question: "Đoạn tư liệu nói về chính sách bóc lột về kinh tế của các triều đại phong kiến phương Bắc.",
+					options: ["Đúng", "Sai"],
+					correct: "Đúng",
+				},
+				{
+					question: "Các triều đại phong kiến phương Bắc bắt nhân dân ta cống nạp các sản vật quý để đưa về Trung Quốc.",
+					options: ["Đúng", "Sai"],
+					correct: "Đúng",
+				},
+				{
+					question: "Việc vơ vét sản vật quý khiến cho sản vật Việt Nam ngày càng suy giảm, cạn kiệt.",
+					options: ["Đúng", "Sai"],
+					correct: "Đúng",
+				},
+				{
+					question: "Những sông có nguồn cung cấp nước chủ yếu từ mưa thì mùa lũ trùng với mùa mưa.",
+					options: ["Đúng", "Sai"],
+					correct: "Đúng",
+				},
+				{
+					question: "Một hệ thống sông bao gồm: sông chính và chi lưu.",
+					options: ["Đúng", "Sai"],
+					correct: "Sai",
+				},
+				{
+					question: "Những sông có nguồn cung cấp nước chủ yếu từ băng tan thì mùa lũ vào đầu mùa hạ.",
+					options: ["Đúng", "Sai"],
+					correct: "Đúng",
+				},
+				{
+					question: "Phụ lưu là các sông thoát nước cho sông chính.",
+					options: ["Đúng", "Sai"],
+					correct: "Sai",
+				},
+			];
+
+			let currentQuestionIndex = 0;
+			let correctCount = 0;
+			let incorrectCount = 0;
+			let selectedOption = null;
+			let timerInterval = null;
+			let secondsElapsed = 0;
+			let shuffledQuestions = [];
+
+			const resultModal = new bootstrap.Modal(document.getElementById("resultModal"));
+
+			function shuffleArray(array) {
+				for (let i = array.length - 1; i > 0; i--) {
+					const j = Math.floor(Math.random() * (i + 1));
+					[array[i], array[j]] = [array[j], array[i]];
+				}
+				return array;
+			}
+
+			function startQuiz() {
+				currentQuestionIndex = 0;
+				correctCount = 0;
+				incorrectCount = 0;
+				shuffledQuestions = shuffleArray([...questions]);
+				secondsElapsed = 0;
+
+				updateStats();
+				loadQuestion();
+				startTimer();
+			}
+
+			function startTimer() {
+				if (timerInterval) clearInterval(timerInterval);
+				secondsElapsed = 0;
+				document.getElementById("timer").textContent = `Time: ${secondsElapsed}s`;
+				timerInterval = setInterval(() => {
+					secondsElapsed++;
+					document.getElementById("timer").textContent = `Time: ${secondsElapsed}s`;
+				}, 1000);
+			}
+
+			function updateStats() {
+				document.querySelector("#stats .stats-correct").textContent = correctCount;
+				document.querySelector("#stats .stats-incorrect").textContent = incorrectCount;
+			}
+
+			function loadQuestion() {
+				if (currentQuestionIndex >= shuffledQuestions.length) {
+					showResult();
+					return;
+				}
+
+				const q = shuffledQuestions[currentQuestionIndex];
+				const questionElement = document.getElementById("question");
+				let formattedQuestion = q.question.replace(/\*([^*]+)\*/g, '<span class="text-primary fw-bold">$1</span>');
+				questionElement.innerHTML = formattedQuestion;
+
+				const playArea = document.querySelector(".play");
+				let imageContainer = playArea.querySelector("#questionImageContainer");
+
+				if (q.image) {
+					if (!imageContainer) {
+						imageContainer = document.createElement("div");
+						imageContainer.id = "questionImageContainer";
+						imageContainer.className = "text-center mb-4";
+						const img = document.createElement("img");
+						img.id = "questionImage";
+						img.className = "img-fluid";
+						img.style.maxHeight = "400px";
+						img.alt = "Hình minh họa câu hỏi";
+						imageContainer.appendChild(img);
+						// Chèn ngay sau phần câu hỏi
+						document.getElementById("question").after(imageContainer);
+					}
+					document.getElementById("questionImage").src = q.image;
+					imageContainer.style.display = "block";
+				} else {
+					if (imageContainer) {
+						imageContainer.style.display = "none";
+					}
+				}
+
+				const optionsContainer = document.getElementById("options");
+				const confirmBtn = document.getElementById("confirmBtn");
+				confirmBtn.disabled = true;
+				selectedOption = null;
+
+				const shuffledOptions = shuffleArray([...q.options]);
+
+				optionsContainer.innerHTML = "";
+
+				shuffledOptions.forEach((option) => {
+					const div = document.createElement("div");
+					div.className = "option-pill";
+					div.textContent = option;
+					div.onclick = () => selectOption(div, option);
+					optionsContainer.appendChild(div);
+				});
+			}
+
+			function selectOption(element, option) {
+				document.querySelectorAll(".option-pill").forEach((pill) => pill.classList.remove("selected"));
+				element.classList.add("selected");
+				selectedOption = option;
+				document.getElementById("confirmBtn").disabled = false;
+			}
+
+			function checkAnswer() {
+				const q = shuffledQuestions[currentQuestionIndex];
+				const isCorrect = selectedOption === q.correct;
+				const selectedPill = Array.from(document.querySelectorAll(".option-pill")).find((pill) => pill.textContent === selectedOption);
+
+				if (isCorrect) {
+					correctCount++;
+					selectedPill.classList.add("correct");
+					correctSound.play().catch((e) => console.log("Không phát được âm thanh Correct:", e));
+				} else {
+					incorrectCount++;
+					selectedPill.classList.add("incorrect");
+					const correctPill = Array.from(document.querySelectorAll(".option-pill")).find((pill) => pill.textContent === q.correct);
+					if (correctPill) correctPill.classList.add("correct");
+					errorSound.play().catch((e) => console.log("Không phát được âm thanh Incorrect:", e));
+				}
+				updateStats();
+
+				setTimeout(() => {
+					currentQuestionIndex++;
+					loadQuestion();
+				}, 1000);
+			}
+
+			function showResult() {
+				clearInterval(timerInterval);
+				document.getElementById("resultCorrect").textContent = correctCount;
+				document.getElementById("resultIncorrect").textContent = incorrectCount;
+				document.getElementById("resultTime").textContent = `${secondsElapsed}s`;
+
+				if (correctCount === shuffledQuestions.length) {
+					document.getElementById("resultTitle").textContent = "Excellent!";
+					document.getElementById("resultMessage").textContent = "You achieved 100% accuracy.";
+				} else {
+					document.getElementById("resultTitle").textContent = "Finished!";
+					document.getElementById("resultMessage").textContent = `You answered ${correctCount} out of ${shuffledQuestions.length} questions correctly. Give it another shot!`;
+				}
+				resultModal.show();
+			}
+
+			function restartQuiz() {
+				resultModal.hide();
+				startQuiz();
+			}
+
+			document.getElementById("confirmBtn").onclick = checkAnswer;
+			document.addEventListener("keydown", (e) => {
+				if (e.code === "Space" && !document.getElementById("confirmBtn").disabled) {
+					e.preventDefault();
+					checkAnswer();
+				}
+			});
+
+			document.addEventListener("DOMContentLoaded", () => {
+				startQuiz();
+			});
+		</script>
+	</body>
+</html>
