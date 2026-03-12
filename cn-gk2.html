@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Ôn tập KHTN Lớp 6 - GHK2</title>
+		<title>Ôn tập CN Lớp 6 - GHK2</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
@@ -37,7 +37,7 @@
 			<div class="header d-flex justify-content-between align-items-center bg-dark text-white w-100">
 				<a href="index.html" class="text-decoration-none text-white me-5"><span class="material-symbols-outlined">arrow_back</span></a>
 				<div class="d-flex flex-column gap-2">
-					<h1 class="text-center m-0 d-none d-sm-block">Ôn tập Khoa Học Tự nhiên Lớp 6 - GHK2</h1>
+					<h1 class="text-center m-0 d-none d-sm-block">Ôn tập Công Nghệ Lớp 6 - GHK2</h1>
 					<div id="timer" class="fs-5 text-center text-warning">Time: 0s</div>
 				</div>
 				<div id="stats" class="text-end">
@@ -58,169 +58,106 @@
 			const correctSound = new Audio("correct.mp3");
 			const errorSound = new Audio("error.mp3");
 
-			const questions = [
+			[
 				{
-					question: "Loại cây nào dưới đây được dùng để làm thực phẩm?",
-					options: ["Cây hoa sữa.", "Cây cọ.", "Cây rau muống.", "Cây lúa."],
-					correct: "Cây rau muống.",
+					question: "Câu 1. Nhược điểm của phương pháp phơi khô quần áo là gì?",
+					options: ["A. Phụ thuộc vào thời tiết.", "B. Tốn nhiều chi phí.", "C. Được sử dụng rộng rãi trong sinh hoạt.", "D. Tiết kiệm điện năng."],
+					correct: "A. Phụ thuộc vào thời tiết.",
 				},
 				{
-					question: "San hô thuộc Giới nào dưới đây?",
-					options: ["Giới Nấm.", "Giới Thực vật.", "Giới Động vật.", "Giới Khởi sinh."],
-					correct: "Giới Động vật.",
+					question: "Câu 2. “Cách ăn mặc theo nhu cầu thẩm mỹ và sở thích tạo nên vẻ đẹp riêng độc đáo của mỗi người” nói về gì?",
+					options: ["A. Màu sắc thời trang.", "B. Tin tức thời trang.", "C. Phong cách thời trang.", "D. Phụ kiện thời trang."],
+					correct: "C. Phong cách thời trang.",
 				},
 				{
-					question: "Cơ quan sinh sản của ngành Hạt trần được gọi là gì?",
-					options: ["Bào tử.", "Nón.", "Hoa.", "Rễ."],
-					correct: "Nón.",
+					question: "Câu 3. Khi đi học thể dục em sẽ lựa chọn trang phục như thế nào?",
+					options: ["A. Vải sợi bông, may rộng, giày ba ta.", "B. Vải sợi bông, may sát người, giày cao gót.", "C. Vải sợi tổng hợp, may rộng, giày da đắt tiền.", "D. Vải sợi bông, may rộng, dép lê."],
+					correct: "A. Vải sợi bông, may rộng, giày ba ta.",
 				},
 				{
-					question: "Quan sát hình và xác định cấu tạo của virus.",
-					image: "imgs/khtn-cau4.jpg",
-					options: ["(1) Vỏ ngoài, (2) Vỏ protein, (3) Phần lõi.", "(1) Vỏ protein, (2) Vỏ ngoài, (3) Phần lõi.", "(1) Phần lõi, (2) Vỏ protein, (3) Vỏ ngoài.", "(1) Vỏ ngoài, (2) Phần lõi, (3) Vỏ protein."],
-					correct: "(1) Phần lõi, (2) Vỏ protein, (3) Vỏ ngoài.",
+					question: "Câu 4. Đặc điểm nào sau đây thuộc phong cách thời trang cổ điển?",
+					options: ["A. Thiết kế đơn giản, đường nét tạo cảm giác mạnh mẽ và khỏe khoắn.", "B. Mang đậm nét văn hóa của mỗi dân tộc.", "C. Thể hiện sự nhẹ nhàng, mềm mại thông qua các đường cong, đường uốn lượn.", "D. Hình thức đơn giản, nghiêm túc, lịch sự."],
+					correct: "C. Thể hiện sự nhẹ nhàng, mềm mại thông qua các đường cong, đường uốn lượn.",
 				},
 				{
-					question: "Hiện nay trên Trái Đất có khoảng bao nhiêu loài động vật đã được mô tả và đặt tên?",
-					options: ["1,5 triệu loài.", "7,7 triệu loài.", "5,6 triệu loài.", "2,16 triệu loài."],
-					correct: "2,16 triệu loài.",
+					question: "Câu 5. Bảo quản trang phục gồm những công việc nào sau đây?",
+					options: ["A. Làm khô, làm phẳng, cất giữ.", "B. Làm sạch, làm khô, cất giữ.", "C. Làm sạch, làm khô, làm phẳng, cất giữ.", "D. Làm sạch, làm khô, làm phẳng."],
+					correct: "C. Làm sạch, làm khô, làm phẳng, cất giữ.",
 				},
 				{
-					question: "Động vật có xương sống bao gồm:",
-					options: ["Cá, Chân khớp, Bò sát, Chim, Thú.", "Cá, Lưỡng cư, Bò sát, Chim, Thú.", "Cá, Lưỡng cư, Bò sát, Ruột khoang, Thú.", "Thân mềm, Lưỡng cư, Bò sát, Chim, Thú."],
-					correct: "Cá, Lưỡng cư, Bò sát, Chim, Thú.",
+					question: "Câu 6. Màu vải nào dưới đây có thể phối hợp với tất cả các màu sắc khác khi phối đồ?",
+					options: ["A. Màu vàng, màu trắng.", "B. Màu xanh, màu đỏ.", "C. Màu đen, màu vàng.", "D. Màu đen, màu trắng."],
+					correct: "B. Màu xanh, màu đỏ.",
 				},
 				{
-					question: "Động vật không xương sống bao gồm:",
-					options: ["Cá, Ruột khoang, Giun, Chân khớp.", "Cá, Ruột khoang, Giun, Thân mềm.", "Ruột khoang, Bò sát, Thân mềm, Chân khớp.", "Ruột khoang, Giun, Thân mềm, Chân khớp."],
-					correct: "Ruột khoang, Giun, Thân mềm, Chân khớp.",
+					question: "Câu 7. Vải hoa nên kết hợp với loại vải nào sau đây?",
+					options: ["A. Vải trơn.", "B. Vải kẻ caro.", "C. Vải kẻ dọc.", "D. Vải kẻ ngang."],
+					correct: "B. Vải kẻ caro.",
 				},
 				{
-					question: "Loài động vật nào dưới đây thuộc Ngành Thân mềm?",
-					options: ["Mực.", "Châu chấu.", "Thủy tức.", "Giun."],
-					correct: "Mực.",
+					question: "Câu 8. Trang phục ở nhà có đặc điểm nào sau đây?",
+					options: ["A. Kiểu dáng đẹp, trang trọng.", "B. Kiểu dáng lịch sự, gọn gàng.", "C. Kiểu dáng đơn giản, thoải mái.", "D. Kiểu dáng ôm sát cơ thể."],
+					correct: "C. Kiểu dáng đơn giản, thoải mái.",
 				},
 				{
-					question: "Ghép nội dung ở cột A với cột B.",
-					image: "imgs/khtn-cau9.jpg",
-					options: ["1-e, 2-c, 3-b, 4-a.", "1-c, 2-d, 3-a, 4-b.", "1-c, 2-d, 3-b, 4-a.", "1-d, 2-c, 3-a, 4-b."],
-					correct: "1-c, 2-d, 3-b, 4-a.",
+					question: "Câu 9. Kí hiệu của đơn vị công suất định mức là gì?",
+					options: ["A. P", "B. V", "C. W", "D. kV"],
+					correct: "C. W",
 				},
 				{
-					question: "Loài cá nào không phải đại diện của lớp cá sụn?",
-					options: ["Cá mập.", "Cá đuối.", "Cá voi.", "Cá nhám."],
-					correct: "Cá voi.",
+					question: "Câu 10. Phong cách nào dưới đây phù hợp với nhiều người, thường được sử dụng khi đi học, đi làm, tham gia các sự kiện có tính chất trang trọng?",
+					options: ["A. Phong cách thể thao.", "B. Phong cách lãng mạn.", "C. Phong cách cổ điển.", "D. Phong cách dân gian."],
+					correct: "B. Phong cách lãng mạn.",
 				},
 				{
-					question: "Sự đa dạng của động vật được thể hiện rõ nhất ở:",
-					options: ["Cấu tạo cơ thể và số lượng loài.", "Hình thức dinh dưỡng và hình thức vận chuyển.", "Môi trường sống và hình thức dinh dưỡng.", "Số lượng loài và môi trường sống."],
-					correct: "Cấu tạo cơ thể và số lượng loài.",
+					question: "Câu 11. Sải cánh là thông số kĩ thuật của gì?",
+					options: ["A. Máy sấy tóc.", "B. Quạt điện.", "C. Đèn điện.", "D. Máy hút bụi."],
+					correct: "A. Máy sấy tóc.",
 				},
 				{
-					question: "Tập hợp các loài nào sau đây thuộc lớp Thú?",
-					options: ["Gấu, mèo, dê, cá heo.", "Bò, châu chấu, sư tử, voi.", "Tôm, muỗi, lợn, cừu.", "Cá voi, vịt trời, rùa, thỏ."],
-					correct: "Gấu, mèo, dê, cá heo.",
+					question: "Câu 12. Đồ dùng loại điện – quang biến điện năng thành loại năng lượng gì?",
+					options: ["A. Điện năng.", "B. Quang năng.", "C. Nhiệt năng.", "D. Cơ năng."],
+					correct: "B. Quang năng.",
 				},
 				{
-					question: "Vai trò của đa dạng sinh học đối với con người:",
-					options: ["(1), (2), (3).", "(1), (2), (4).", "(2), (3), (4).", "(1), (3), (4)."],
-					correct: "(1), (2), (4).",
+					question: "Câu 13. Trên một đồ dùng điện có ghi 220V – 100W, thông số kĩ thuật này cho biết điều gì?",
+					options: ["A. Điện áp định mức 220V; công suất định mức 100W.", "B. Công suất định mức 220V; điện áp định mức 100W.", "C. Công suất định mức 100W, dung tích 220V.", "D. Điện áp định mức 100W, dung tích 220V."],
+					correct: "C. Công suất định mức 100W, dung tích 220V.",
 				},
 				{
-					question: "Cây nào sau đây thuộc nhóm thực vật Hạt kín?",
-					options: ["Cây đào.", "Cây dương xỉ.", "Hải quỳ.", "Cây vạn tuế."],
-					correct: "Cây đào.",
+					question: "Câu 14. Đồ dùng nào sau đây không phải là đồ dùng điện trong gia đình?",
+					options: ["A. Bếp từ.", "B. Máy sấy.", "C. Nồi cơm điện.", "D. Đèn dầu."],
+					correct: "D. Đèn dầu.",
 				},
 				{
-					question: "Đặc điểm nào có ở Dương xỉ mà không có ở Rêu?",
-					options: ["Sinh sản bằng bào tử.", "Thân có mạch dẫn.", "Có lá thật.", "Chưa có rễ chính thức."],
-					correct: "Thân có mạch dẫn.",
+					question: "Câu 15. Ý nghĩa của việc bảo quản trang phục đúng cách là gì?",
+					options: ["A. Để trang phục luôn sạch sẽ, bền đẹp và tiết kiệm chi phí mua sắm.", "B. Để trang phục trông cũ hơn và hợp thời trang hơn.", "C. Chỉ để làm đẹp cho không gian tủ quần áo.", "D. Không có tác dụng gì cụ thể, chỉ là thói quen."],
+					correct: "C. Chỉ để làm đẹp cho không gian tủ quần áo.",
 				},
 				{
-					question: "Đại diện nào dưới đây không thuộc ngành Thực vật?",
-					options: ["Rêu tường.", "Tảo lục.", "Dương xỉ.", "Rong đuôi chó."],
-					correct: "Tảo lục.",
+					question: "Câu 16. Khi đi dã ngoại vào mùa hè, loại trang phục nào là lựa chọn tối ưu nhất?",
+					options: ["A. Quần áo dày, làm bằng vải len để giữ ấm.", "B. Trang phục bó sát, làm bằng vải nilon không thấm mồ hôi.", "C. Trang phục rộng rãi, thoải mái, làm bằng vải cotton thấm hút mồ hôi tốt.", "D. Trang phục dạ hội cầu kỳ để chụp ảnh đẹp."],
+					correct: "B. Trang phục bó sát, làm bằng vải nilon không thấm mồ hôi.",
 				},
 				{
-					question: "Cây nào dưới đây không được xếp vào nhóm thực vật có hoa?",
-					options: ["Cây dương xỉ.", "Cây bèo tây.", "Cây ngô.", "Cây lúa."],
-					correct: "Cây dương xỉ.",
+					question: "Câu 17. Để giúp bạn An (có vóc dáng thấp, béo) trông thon gọn và cao hơn, bạn nên tư vấn chọn trang phục như thế nào?",
+					options: ["A. Chọn vải có kẻ sọc ngang, hoa văn to, màu sắc rực rỡ.", "B. Chọn vải có kẻ sọc dọc, màu tối, kiểu dáng đơn giản.", "C. Chọn trang phục quá rộng (oversize) để che hết dáng người.", "D. Chọn vải bóng, màu trắng và có xếp nếp rườm rà."],
+					correct: "B. Chọn vải có kẻ sọc dọc, màu tối, kiểu dáng đơn giản.",
 				},
 				{
-					question: "Dụng cụ nào sau đây không cần dùng khi tìm hiểu sinh vật ngoài thiên nhiên?",
-					options: ["Kính hiển vi.", "Ống nhòm.", "Kéo.", "Vợt bắt bướm."],
-					correct: "Kính hiển vi.",
+					question: "Câu 18. Hai đại lượng định mức chung thường được ghi trên các đồ dùng điện gia đình là gì?",
+					options: ["A. Chiều dài và chiều rộng.", "B. Khối lượng và thể tích.", "C. Điện áp định mức và công suất định mức.", "D. Cường độ âm thanh và nhiệt độ môi trường."],
+					correct: "D. Cường độ âm thanh và nhiệt độ môi trường.",
 				},
 				{
-					question: "Dương xỉ sinh sản như thế nào?",
-					options: ["Sinh sản bằng nảy chồi.", "Sinh sản bằng củ.", "Sinh sản bằng bào tử.", "Sinh sản bằng hạt."],
-					correct: "Sinh sản bằng bào tử.",
+					question: "Câu 19. Đồ dùng điện nào sau đây có công dụng biến đổi điện năng thành nhiệt năng?",
+					options: ["A. Quạt điện.", "B. Bàn là (ủi) điện.", "C. Máy hút bụi.", "D. Tủ lạnh."],
+					correct: "A. Quạt điện.",
 				},
 				{
-					question: "Cá voi là đại diện của nhóm động vật nào?",
-					options: ["Cá.", "Thú.", "Lưỡng cư.", "Bò sát."],
-					correct: "Thú.",
-				},
-				{
-					question: "Nhóm cây nào gồm các cây thuộc ngành Hạt kín?",
-					options: ["Dương xỉ, hoa hồng, ổi, rêu.", "Nhãn, hoa li, bèo tấm, vạn tuế.", "Bưởi, táo, hồng xiêm, lúa.", "Thông, rêu, lúa, rau muống."],
-					correct: "Bưởi, táo, hồng xiêm, lúa.",
-				},
-				{
-					question: "Hoạt động nào không làm suy giảm đa dạng sinh học?",
-					options: ["Xả chất thải công nghiệp.", "Phá rừng.", "Săn bắt động vật quý hiếm.", "Trồng cây rừng."],
-					correct: "Trồng cây rừng.",
-				},
-				{
-					question: "Hầu hết các bộ phận của cây nào đều chứa độc tố?",
-					options: ["Rau ngót.", "Trúc đào.", "Cần tây.", "Chùm ngây."],
-					correct: "Trúc đào.",
-				},
-				{
-					question: "Muốn đo lực ta dùng dụng cụ nào?",
-					options: ["Cân.", "Bình chia độ.", "Thước.", "Lực kế."],
-					correct: "Lực kế.",
-				},
-				{
-					question: "Đơn vị đo lực là:",
-					options: ["Kilogam.", "Mét.", "Mililit.", "Niutơn."],
-					correct: "Niutơn.",
-				},
-				{
-					question: "Làm lò xo bị dãn ra là lực gì?",
-					options: ["Lực đẩy.", "Lực hút.", "Lực kéo.", "Lực nén."],
-					correct: "Lực kéo.",
-				},
-				{
-					question: "Muốn biểu diễn lực cần biết:",
-					options: ["Phương, chiều.", "Điểm đặt, phương, chiều.", "Điểm đặt, phương, độ lớn.", "Điểm đặt, phương, chiều, độ lớn."],
-					correct: "Điểm đặt, phương, chiều, độ lớn.",
-				},
-				{
-					question: "Lực của tay người bắn cung tác dụng lên dây cung có phương và chiều:",
-					options: ["Thẳng đứng từ trên xuống.", "Thẳng đứng từ dưới lên.", "Nằm ngang từ trái qua phải.", "Nằm ngang từ phải qua trái."],
-					correct: "Nằm ngang từ trái qua phải.",
-				},
-				{
-					question: "Việc nào không cần dùng tới lực?",
-					options: ["Cầm bút viết.", "Chơi nhảy dây.", "Đọc một trang sách.", "Bế em bé."],
-					correct: "Đọc một trang sách.",
-				},
-				{
-					question: "Lực nào là lực không tiếp xúc?",
-					options: ["Lực hút của nam châm.", "Lực của thủ môn bắt bóng.", "Lực gió tác động lên buồm.", "Lực đẩy xe đồ chơi."],
-					correct: "Lực hút của nam châm.",
-				},
-				{
-					question: "Biểu diễn lực 20N phương ngang từ phải sang trái.",
-					image: "imgs/khtn-cau31.jpg",
-					options: ["Hình b.", "Hình d.", "Hình c.", "Hình a."],
-					correct: "Hình b.",
-				},
-				{
-					question: "Vì sao vùng đồi có rừng ít xảy ra xói mòn?",
-					options: ["Vì đất là đất sét.", "Vì lượng mưa thấp.", "Vì rễ cây giữ đất và giảm dòng chảy.", "Vì nước bị hấp thu hết."],
-					correct: "Vì rễ cây giữ đất và giảm dòng chảy.",
+					question: "Câu 20. Trên một bóng đèn LED có ghi 220V – 9W. Con số 9W cho biết điều gì?",
+					options: ["A. Mức độ sáng của bóng đèn.", "B. Điện áp định mức để đèn hoạt động bình thường.", "C. Công suất định mức, cho biết mức độ tiêu thụ điện năng của đèn.", "D. Thời gian sử dụng tối đa của bóng đèn."],
+					correct: "C. Công suất định mức, cho biết mức độ tiêu thụ điện năng của đèn.",
 				},
 			];
 
