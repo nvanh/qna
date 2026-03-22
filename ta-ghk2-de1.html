@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Ôn tập Tiếng Anh Lớp 6 - Đề số 1</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_back" />
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="style2.css" rel="stylesheet" />
+	</head>
+	<body>
+		<!-- Result Modal -->
+		<div class="modal fade" id="resultModal" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header bg-primary text-white">
+						<h5 class="modal-title" id="resultTitle"></h5>
+					</div>
+					<div class="modal-body text-center">
+						<p id="resultMessage" class="fs-4"></p>
+						<div class="d-flex justify-content-center align-items-center gap-3">
+							<p>Correct: <span id="resultCorrect" class="stats-correct fw-bold fs-3"></span></p>
+							<p>Incorrect: <span id="resultIncorrect" class="stats-incorrect fw-bold fs-3"></span></p>
+							<p>Time: <span id="resultTime" class="fw-bold fs-3"></span></p>
+						</div>
+						<button class="btn btn-lg btn-primary mt-3" onclick="restartQuiz()">Làm lại</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Main Content -->
+		<div class="w-100">
+			<div class="header d-flex justify-content-between align-items-center bg-dark text-white w-100">
+				<a href="#" class="text-decoration-none text-white me-5"><span class="material-symbols-outlined">arrow_back</span></a>
+				<div class="d-flex flex-column gap-2">
+					<h1 class="text-center m-0 d-none d-sm-block">Ôn tập Tiếng Anh Lớp 6 - Đề số 1</h1>
+					<div id="timer" class="fs-5 text-center text-warning">Time: 0s</div>
+				</div>
+				<div id="stats" class="text-end">
+					<div>Correct: <span class="stats-correct">0</span></div>
+					<div>Incorrect: <span class="stats-incorrect">0</span></div>
+				</div>
+			</div>
+			<div class="play mx-auto">
+				<div id="question" class="question-display"></div>
+				<div id="options" class="d-flex flex-column flex-wrap justify-content-center align-items-center"></div>
+				<div class="text-center">
+					<button id="confirmBtn" class="btn btn-success confirm-btn" disabled>Confirm (Phím Space)</button>
+				</div>
+			</div>
+		</div>
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+		<script>
+			const correctSound = new Audio("correct.mp3");
+			const errorSound = new Audio("error.mp3");
+
+			const questions = [
+				{
+					question:
+						"I. LISTENING\n1. Listen to three friends talking about movies. Fill in the blanks with the information about movies.\nNames of the movies: Scary Gary; Kind of movie/ Genre: horror; Time: on this (1) ______ at 4:30.\nNames of the movies: Tiger Toes; Kind of movie/ Genre: (2) ______ movie; Time: at 2:30 and (3) ______ on Saturday; on Sunday (4) ______ at 5:00.",
+					options: [],
+					type: "multiple_input",
+					correct: ["Saturday", "animated", "7:30", "afternoon"],
+				},
+				{
+					question: "2. Listen to the conversation and choose the correct answer A, B or C.\n5. The children want to see a movie this weekend.",
+					options: ["A. True", "B. False"],
+					type: "true_false",
+					correct: "A. True",
+				},
+				{
+					question: "2. Listen to the conversation and choose the correct answer A, B or C.\n6. The children don't want to see 'Scary Gary' because it's a horror movie.",
+					options: ["A. True", "B. False"],
+					type: "true_false",
+					correct: "A. True",
+				},
+				{
+					question: "2. Listen to the conversation and choose the correct answer A, B or C.\n7. They can see 'Tiger Toes' at 2:30 on Saturday.",
+					options: ["A. True", "B. False"],
+					type: "true_false",
+					correct: "A. True",
+				},
+				{
+					question: "2. Listen to the conversation and choose the correct answer A, B or C.\n8. They are going to see a movie on Sunday afternoon.",
+					options: ["A. True", "B. False"],
+					type: "true_false",
+					correct: "B. False",
+				},
+				{
+					question: "II. PHONETICS\nCircle the word whose underlined part is pronounced differently from the others’.",
+					options: ["A. brea**th**e", "B. wea**th**er", "C. **th**erefore", "D. tee**th**"],
+					type: "MCQ",
+					correct: "D. teeth",
+				},
+				{
+					question: "II. PHONETICS\nCircle the word whose underlined part is pronounced differently from the others’.",
+					options: ["A. m**a**rathon", "B. rhythm", "C. th**ir**sty", "D. youth"],
+					type: "MCQ",
+					correct: "B. rhythm",
+				},
+				{
+					question: "II. PHONETICS\nCircle the word whose underlined part is pronounced differently from the others’.",
+					options: ["A. t**ow**er", "B. sl**ow**", "C. fl**ow**er", "D. d**ow**n"],
+					type: "MCQ",
+					correct: "B. slow",
+				},
+				{
+					question: "II. PHONETICS\nCircle the word whose underlined part is pronounced differently from the others’.",
+					options: ["A. mat**ch**", "B. ma**ch**ine", "C. **ch**icken", "D. wat**ch**"],
+					type: "MCQ",
+					correct: "B. machine",
+				},
+				{
+					question: "III. VOCABULARY AND GRAMMAR\nCircle the best answer A, B, C or D to complete each sentence.\n13. Which ______ do you like best? – Badminton.",
+					options: ["A. sports", "B. subjects", "C. books", "D. movies"],
+					type: "MCQ",
+					correct: "A. sports",
+				},
+				{
+					question: "III. VOCABULARY AND GRAMMAR\nCircle the best answer A, B, C or D to complete each sentence.\n14. Pelé is regarded as the best football ______ of all time.",
+					options: ["A. player", "B. teacher", "C. worker", "D. nurse"],
+					type: "MCQ",
+					correct: "A. player",
+				},
+				{
+					question: "III. VOCABULARY AND GRAMMAR\nCircle the best answer A, B, C or D to complete each sentence.\n15. ______ is the most popular sport in the world.",
+					options: ["A. Football", "B. Badminton", "C. Basketball", "D. Volleyball"],
+					type: "MCQ",
+					correct: "A. Football",
+				},
+				{
+					question: "III. VOCABULARY AND GRAMMAR\nCircle the best answer A, B, C or D to complete each sentence.\n16. My sister ______ goes swimming. She doesn’t know how to swim.",
+					options: ["A. always", "B. usually", "C. never", "D. often"],
+					type: "MCQ",
+					correct: "C. never",
+				},
+				{
+					question: "III. VOCABULARY AND GRAMMAR\nCircle the best answer A, B, C or D to complete each sentence.\n17. ______ the news at 7 o'clock yesterday?",
+					options: ["A. Did you watch", "B. Do you watch", "C. Are you watching", "D. Will you watch"],
+					type: "MCQ",
+					correct: "A. Did you watch",
+				},
+				{
+					question: "III. VOCABULARY AND GRAMMAR\nCircle the best answer A, B, C or D to complete each sentence.\n18. You should ______ more trees to make the world greener.",
+					options: ["A. plant", "B. cut", "C. water", "D. pick"],
+					type: "MCQ",
+					correct: "A. plant",
+				},
+				{
+					question: "III. VOCABULARY AND GRAMMAR\nCircle the best answer A, B, C or D to complete each sentence.\n19. If you ______ more, you will be in better shape.",
+					options: ["A. exercise", "B. sleep", "C. eat", "D. study"],
+					type: "MCQ",
+					correct: "A. exercise",
+				},
+				{
+					question: "III. VOCABULARY AND GRAMMAR\nCircle the best answer A, B, C or D to complete each sentence.\n20. We should ______ our old clothes to the poor people.",
+					options: ["A. give", "B. buy", "C. sell", "D. throw"],
+					type: "MCQ",
+					correct: "A. give",
+				},
+				{
+					question: "IV. VERB FORM\nPut the words in the blanks into the correct forms\n21. Be quiet! The baby ______ (sleep).",
+					options: [],
+					type: "single_input",
+					correct: "is sleeping",
+				},
+				{
+					question: "IV. VERB FORM\nPut the words in the blanks into the correct forms\n22. My father ______ (play) football when he was a child.",
+					options: [],
+					type: "single_input",
+					correct: "played",
+				},
+				{
+					question: "IV. VERB FORM\nPut the words in the blanks into the correct forms\n23. We ______ (not/ go) to school last Sunday.",
+					options: [],
+					type: "single_input",
+					correct: "did not go",
+				},
+				{
+					question: "IV. VERB FORM\nPut the words in the blanks into the correct forms\n24. If we reuse paper, we ______ (save) a lot of trees.",
+					options: [],
+					type: "single_input",
+					correct: "will save",
+				},
+				{
+					question:
+						"V. READING\nRead the passage and choose the best answer A, B or C.\nChristine Robinson, August 12\nBali is a wonderful destination for a vacation. A lot of visitors go to Bali for their vacations every year. You can enjoy the white sand beaches, take photos, and meet friendly local people. You can also go on cycling tours, scuba diving, and even snorkeling. Bali is one of the most beautiful islands in Indonesia. You can go there by boat or by plane. You should not go there between October and March because it is very rainy. Between April and October are the best times to visit Bali, during the dry season. You can also go to the international Film Festival in Bali every September. If you get the chance, you should spend your vacation in this beautiful place.\n25. ______ visitors go to Bali for their vacations.",
+					options: ["A. Some", "B. Lots of", "C. Much"],
+					type: "MCQ",
+					correct: "B. Lots of",
+				},
+				{
+					question: "V. READING\n26. Which of the following is NOT mentioned in the text?",
+					options: ["A. Enjoy white sand beaches", "B. Take photos", "C. Go shopping"],
+					type: "MCQ",
+					correct: "C. Go shopping",
+				},
+				{
+					question: "V. READING\n27. How can you go to Bali?",
+					options: ["A. By train", "B. By plane", "C. By car"],
+					type: "MCQ",
+					correct: "B. By plane",
+				},
+				{
+					question: "V. READING\n28. When is the best time to visit Bali?",
+					options: ["A. Between April and October", "B. Between October and March", "C. Every month"],
+					type: "MCQ",
+					correct: "A. Between April and October",
+				},
+				{
+					question: "V. READING\n29. When is the International Film Festival in Bali?",
+					options: ["A. Every October", "B. Every September", "C. Every March"],
+					type: "MCQ",
+					correct: "B. Every September",
+				},
+				{
+					question: "VI. WRITING\nUnscramble these sentences.\n30. are/ Which city/ vacation?/ visit/ you/ on/ going/ to/ your",
+					options: [],
+					type: "unscramble",
+					correct: "Which city are you going to visit on your vacation?",
+				},
+				{
+					question: "VI. WRITING\nUnscramble these sentences.\n31. best/ in/ the/ Pelé/ history/ is/ player/ football/ of.",
+					options: [],
+					type: "unscramble",
+					correct: "Pelé is the best football player in history.",
+				},
+				{
+					question: "VI. WRITING\nUnscramble these sentences.\n32. will/ robot/ My/ be/ to/ able/ the/ house/ clean.",
+					options: [],
+					type: "unscramble",
+					correct: "My robot will be able to clean the house.",
+				},
+				{
+					question: "VI. WRITING\nUnscramble these sentences.\n33. you/ TV/ watch/ often/ do/ How?",
+					options: [],
+					type: "unscramble",
+					correct: "How often do you watch TV?",
+				},
+				{
+					question: "VI. WRITING\nUnscramble these sentences.\n34. should/ We/ paper/ reuse/ to/ save/ trees.",
+					options: [],
+					type: "unscramble",
+					correct: "We should reuse paper to save trees.",
+				},
+			];
+
+			let currentQuestionIndex = 0;
+			let correctCount = 0;
+			let incorrectCount = 0;
+			let selectedOption = null;
+			let timerInterval = null;
+			let secondsElapsed = 0;
+			let shuffledQuestions = [];
+
+			// Biến cho các dạng câu hỏi mới
+			let currentType = "";
+			let inputElements = [];
+			let builtWords = [];
+			let wordElements = [];
+
+			const resultModal = new bootstrap.Modal(document.getElementById("resultModal"));
+
+			function shuffleArray(array) {
+				for (let i = array.length - 1; i > 0; i--) {
+					const j = Math.floor(Math.random() * (i + 1));
+					[array[i], array[j]] = [array[j], array[i]];
+				}
+				return array;
+			}
+
+			function normalize(str) {
+				return String(str || "")
+					.trim()
+					.toLowerCase();
+			}
+
+			function startQuiz() {
+				currentQuestionIndex = 0;
+				correctCount = 0;
+				incorrectCount = 0;
+				shuffledQuestions = shuffleArray([...questions]);
+				secondsElapsed = 0;
+
+				updateStats();
+				loadQuestion();
+				startTimer();
+			}
+
+			function startTimer() {
+				if (timerInterval) clearInterval(timerInterval);
+				secondsElapsed = 0;
+				document.getElementById("timer").textContent = `Time: ${secondsElapsed}s`;
+				timerInterval = setInterval(() => {
+					secondsElapsed++;
+					document.getElementById("timer").textContent = `Time: ${secondsElapsed}s`;
+				}, 1000);
+			}
+
+			function updateStats() {
+				document.querySelector("#stats .stats-correct").textContent = correctCount;
+				document.querySelector("#stats .stats-incorrect").textContent = incorrectCount;
+			}
+
+			function getUserAnswer() {
+				if (currentType === "MCQ" || currentType === "true_false") {
+					return selectedOption;
+				} else if (currentType === "single_input") {
+					return inputElements[0] ? inputElements[0].value : "";
+				} else if (currentType === "multiple_input") {
+					return inputElements.map((inp) => inp.value);
+				} else if (currentType === "unscramble") {
+					return builtWords.join(" ");
+				}
+				return "";
+			}
+
+			function loadQuestion() {
+				if (currentQuestionIndex >= shuffledQuestions.length) {
+					showResult();
+					return;
+				}
+
+				const q = shuffledQuestions[currentQuestionIndex];
+				const questionElement = document.getElementById("question");
+				let formattedQuestion = q.question.replace(/\n/g, "<br>");
+				questionElement.innerHTML = formattedQuestion;
+
+				// Reset biến
+				currentType = q.type;
+				selectedOption = null;
+				inputElements = [];
+				builtWords = [];
+				wordElements = [];
+
+				const optionsContainer = document.getElementById("options");
+				const confirmBtn = document.getElementById("confirmBtn");
+				confirmBtn.disabled = true;
+				optionsContainer.innerHTML = "";
+
+				if (q.type === "MCQ" || q.type === "true_false") {
+					const shuffledOptions = shuffleArray([...q.options]);
+					shuffledOptions.forEach((option) => {
+						const div = document.createElement("div");
+						div.className = "option-pill";
+						//div.textContent = option;
+						div.innerHTML = option.replace(/\*\*([^*]+)\*\*/g, '<strong class="text-danger">$1</strong>');
+						div.onclick = () => selectOption(div, option);
+						optionsContainer.appendChild(div);
+					});
+				} else if (q.type === "single_input" || q.type === "multiple_input") {
+					const numBlanks = q.type === "single_input" ? 1 : Array.isArray(q.correct) ? q.correct.length : 1;
+					const fillContainer = document.createElement("div");
+					fillContainer.className = "mb-4";
+
+					const title = document.createElement("h5");
+					title.className = "mb-3";
+					title.textContent = q.type === "multiple_input" ? "Fill in the blanks:" : "Fill in the blank:";
+					fillContainer.appendChild(title);
+
+					for (let i = 0; i < numBlanks; i++) {
+						const group = document.createElement("div");
+						group.className = "mb-3 d-flex align-items-center gap-3";
+
+						const label = document.createElement("label");
+						label.className = "form-label fw-bold";
+						label.textContent = q.type === "multiple_input" ? `${i + 1}.` : "Answer:";
+						label.style.minWidth = "60px";
+
+						const input = document.createElement("input");
+						input.type = "text";
+						input.className = "form-control";
+						input.placeholder = "Nhập đáp án...";
+						input.oninput = checkIfInputsFilled;
+
+						group.append(label, input);
+						fillContainer.appendChild(group);
+						inputElements.push(input);
+					}
+					optionsContainer.appendChild(fillContainer);
+				} else if (q.type === "unscramble") {
+					// Parse scrambled words từ dòng cuối
+					const lines = q.question.split("\n");
+					let lastLine = lines[lines.length - 1].trim();
+					let scrambledStr = lastLine.includes(". ") ? lastLine.split(". ")[1] : lastLine;
+					let wordList = scrambledStr
+						.split("/")
+						.map((s) => s.trim())
+						.filter((s) => s);
+
+					const shuffledWords = shuffleArray([...wordList]);
+
+					const unscrambleHTML = `
+						<h5 class="mb-3">Click the numbered words in the correct order:</h5>
+						<div id="scrambledWordsContainer" class="d-flex flex-wrap gap-2 mb-4"></div>
+						<label class="form-label fw-bold">Your sentence:</label>
+						<div id="builtSentence" class="border border-2 p-3 bg-light rounded"></div>
+						<button id="clearBtn" class="btn btn-outline-secondary mt-3">Clear sentence</button>
+					`;
+					const container = document.createElement("div");
+					container.innerHTML = unscrambleHTML;
+					optionsContainer.appendChild(container);
+
+					const scrambledDiv = document.getElementById("scrambledWordsContainer");
+					shuffledWords.forEach((word, idx) => {
+						const pill = document.createElement("div");
+						pill.className = "option-pill";
+						pill.innerHTML = `<strong>${idx + 1}.</strong> ${word}`;
+						pill.onclick = () => addWordToSentence(word, pill);
+						scrambledDiv.appendChild(pill);
+						wordElements.push(pill);
+					});
+
+					document.getElementById("clearBtn").onclick = resetUnscramble;
+					updateBuiltSentence();
+				}
+
+				// Disable confirm ban đầu
+				confirmBtn.disabled = true;
+			}
+
+			function selectOption(element, option) {
+				document.querySelectorAll(".option-pill").forEach((p) => p.classList.remove("selected"));
+				element.classList.add("selected");
+				selectedOption = option;
+				document.getElementById("confirmBtn").disabled = false;
+			}
+
+			function checkIfInputsFilled() {
+				if (currentType !== "single_input" && currentType !== "multiple_input") return;
+				const allFilled = inputElements.every((inp) => inp.value.trim() !== "");
+				document.getElementById("confirmBtn").disabled = !allFilled;
+			}
+
+			function addWordToSentence(word, pill) {
+				if (pill.classList.contains("used")) return;
+				builtWords.push(word);
+				updateBuiltSentence();
+				pill.classList.add("used");
+				if (builtWords.length === wordElements.length) {
+					document.getElementById("confirmBtn").disabled = false;
+				}
+			}
+
+			function updateBuiltSentence() {
+				const el = document.getElementById("builtSentence");
+				if (el) el.textContent = builtWords.join(" ");
+			}
+
+			function resetUnscramble() {
+				builtWords = [];
+				updateBuiltSentence();
+				wordElements.forEach((p) => p.classList.remove("used"));
+				document.getElementById("confirmBtn").disabled = true;
+			}
+
+			function checkAnswer() {
+				const q = shuffledQuestions[currentQuestionIndex];
+				const userAnswer = getUserAnswer();
+
+				let isCorrect = false;
+				if (Array.isArray(q.correct)) {
+					const userArr = Array.isArray(userAnswer) ? userAnswer : [userAnswer];
+					const normUser = userArr.map(normalize);
+					const normCorrect = q.correct.map(normalize);
+					isCorrect = normUser.length === normCorrect.length && normUser.every((v, i) => v === normCorrect[i]);
+				} else if (currentType === "MCQ" || currentType === "true_false") {
+					isCorrect = userAnswer === q.correct;
+				} else {
+					isCorrect = normalize(userAnswer) === normalize(q.correct);
+				}
+
+				// Hiển thị feedback MCQ
+				if (currentType === "MCQ" || currentType === "true_false") {
+					const selectedPill = Array.from(document.querySelectorAll(".option-pill")).find((p) => p.textContent === selectedOption);
+					if (selectedPill) {
+						if (isCorrect) {
+							selectedPill.classList.add("correct");
+						} else {
+							selectedPill.classList.add("incorrect");
+							const correctPill = Array.from(document.querySelectorAll(".option-pill")).find((p) => p.textContent === q.correct);
+							if (correctPill) correctPill.classList.add("correct");
+						}
+					}
+				}
+
+				// Âm thanh + điểm
+				if (isCorrect) {
+					correctCount++;
+					correctSound.play().catch(() => {});
+				} else {
+					incorrectCount++;
+					errorSound.play().catch(() => {});
+				}
+				updateStats();
+
+				// Feedback sai (tất cả dạng)
+				const optionsContainer = document.getElementById("options");
+				if (!isCorrect) {
+					let correctText = Array.isArray(q.correct) ? q.correct.map((a, i) => `${i + 1}. ${a}`).join("<br>") : q.correct;
+					const fb = document.createElement("div");
+					fb.className = "alert alert-info mt-3";
+					fb.innerHTML = `Đáp án đúng: <strong>${correctText}</strong>`;
+					optionsContainer.appendChild(fb);
+				}
+
+				// Chuyển câu sau 1.5s
+				setTimeout(() => {
+					currentQuestionIndex++;
+					loadQuestion();
+				}, 1500);
+			}
+
+			function showResult() {
+				clearInterval(timerInterval);
+				document.getElementById("resultCorrect").textContent = correctCount;
+				document.getElementById("resultIncorrect").textContent = incorrectCount;
+				document.getElementById("resultTime").textContent = `${secondsElapsed}s`;
+
+				if (correctCount === shuffledQuestions.length) {
+					document.getElementById("resultTitle").textContent = "Excellent!";
+					document.getElementById("resultMessage").textContent = "Bạn đạt 100% chính xác!";
+				} else {
+					document.getElementById("resultTitle").textContent = "Hoàn thành!";
+					document.getElementById("resultMessage").textContent = `Bạn trả lời đúng ${correctCount}/${shuffledQuestions.length} câu. Hãy thử lại!`;
+				}
+				resultModal.show();
+			}
+
+			function restartQuiz() {
+				resultModal.hide();
+				startQuiz();
+			}
+
+			// Event listeners
+			document.getElementById("confirmBtn").onclick = checkAnswer;
+			document.addEventListener("keydown", (e) => {
+				if (e.code === "Space" && !document.getElementById("confirmBtn").disabled) {
+					e.preventDefault();
+					checkAnswer();
+				}
+			});
+
+			document.addEventListener("DOMContentLoaded", () => {
+				startQuiz();
+			});
+		</script>
+	</body>
+</html>

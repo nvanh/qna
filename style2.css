@@ -1,0 +1,219 @@
+/* style.css - Phiên bản cải tiến cho app ôn tập Tiếng Anh */
+
+html,
+body {
+	background-color: #f8f9fa;
+	font-family: "Roboto Condensed", sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	font-size: 16px;
+	margin: 0;
+	padding: 0;
+	min-height: 100vh;
+}
+
+.material-symbols-outlined {
+	font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.header {
+	padding: 1rem 1.5rem;
+	background: linear-gradient(135deg, #343a40, #212529);
+	color: white;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.header a {
+	color: white;
+	transition: color 0.3s;
+}
+
+.header a:hover {
+	color: #ffc107;
+}
+
+.play {
+	max-width: 1100px;
+	margin: 2rem auto;
+	padding: 2.5rem 2rem;
+	background: white;
+	border-radius: 1.2rem;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+#question {
+	font-size: 1.6rem;
+	font-weight: 600;
+	line-height: 1.45;
+	margin-bottom: 2.2rem;
+	text-align: center;
+	color: #2c3e50;
+	white-space: pre-line;
+}
+
+.question-display br {
+	margin-bottom: 0.6rem;
+}
+
+/* Pill cho lựa chọn MCQ / True-False */
+.option-pill {
+	padding: 14px 28px;
+	margin: 10px 12px;
+	background: #e9ecef;
+	border: 2px solid #dee2e6;
+	border-radius: 999px;
+	cursor: pointer;
+	transition: all 0.28s ease;
+	min-width: 180px;
+	max-width: 320px;
+	text-align: center;
+	font-size: 1.15rem;
+	font-weight: 500;
+	user-select: none;
+}
+
+.option-pill:hover:not(.used) {
+	background: #dee2e6;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.option-pill.selected {
+	background: #0d6efd;
+	color: white;
+	border-color: #0d6efd;
+	box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.25);
+}
+
+.option-pill.correct {
+	background: #198754;
+	color: white;
+	border-color: #198754;
+}
+
+.option-pill.incorrect {
+	background: #dc3545;
+	color: white;
+	border-color: #dc3545;
+}
+
+.option-pill.used {
+	opacity: 0.65;
+	cursor: not-allowed;
+	background: #6c757d;
+	color: white;
+	border-color: #6c757d;
+}
+
+/* Input fields (single_input & multiple_input) */
+.form-control {
+	font-size: 1.1rem;
+	padding: 0.75rem 1.2rem;
+	border-radius: 0.6rem;
+	border: 1px solid #ced4da;
+	transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+	border-color: #0d6efd;
+	box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-label {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: #495057;
+}
+
+/* Unscramble specific */
+#scrambledWordsContainer .option-pill {
+	min-width: 100px;
+	padding: 12px 20px;
+	font-size: 1.05rem;
+}
+
+#builtSentence {
+	min-height: 80px;
+	padding: 1.2rem;
+	background: #f1f3f5;
+	border: 2px dashed #adb5bd;
+	border-radius: 0.8rem;
+	font-size: 1.25rem;
+	line-height: 1.6;
+	color: #212529;
+	white-space: pre-wrap;
+}
+
+#clearBtn {
+	font-size: 1rem;
+	padding: 0.6rem 1.5rem;
+}
+
+/* Confirm button */
+.confirm-btn {
+	margin-top: 2.5rem;
+	padding: 14px 40px;
+	font-size: 1.25rem;
+	font-weight: 500;
+	border-radius: 50px;
+	transition: all 0.3s;
+}
+
+.confirm-btn:hover:not(:disabled) {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 16px rgba(25, 135, 84, 0.3);
+}
+
+.confirm-btn:disabled {
+	opacity: 0.6;
+}
+
+/* Stats */
+.stats-correct {
+	color: #198754;
+	font-weight: bold;
+}
+
+.stats-incorrect {
+	color: #dc3545;
+	font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+	.play {
+		margin: 1.5rem;
+		padding: 1.8rem 1.2rem;
+	}
+
+	#question {
+		font-size: 1.4rem;
+	}
+
+	.option-pill {
+		min-width: 140px;
+		padding: 12px 20px;
+		margin: 8px;
+		font-size: 1.05rem;
+	}
+
+	.confirm-btn {
+		padding: 12px 32px;
+		font-size: 1.15rem;
+	}
+}
+
+.option-pill strong.text-danger {
+	font-weight: 700;
+	/* đậm hơn nữa nếu cần */
+	color: #dc3545 !important;
+	/* màu đỏ Bootstrap */
+}
+
+/* Đảm bảo khi pill được chọn / đúng / sai thì màu đỏ vẫn nổi bật */
+.option-pill.selected strong.text-danger,
+.option-pill.correct strong.text-danger,
+.option-pill.incorrect strong.text-danger {
+	color: #fff !important;
+	/* trắng khi nền pill có màu đậm */
+}
